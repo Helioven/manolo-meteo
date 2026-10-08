@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#08162b" />
+  <meta name="description" content="Manolo Meteo: el tiempo en Córdoba, siete días interactivos y un consejo con arte." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Manolo Meteo · Córdoba</title>
+</head>
+<body data-time="night" data-weather="clear">
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-icon">☀</span>
+        <div>
+          <div class="brand-title">MANOLO <strong>METEO</strong></div>
+          <small>ESTACIÓN METEOROLÓGICA · CÓRDOBA</small>
+        </div>
+      </div>
+      <button id="refresh" class="icon-button" aria-label="Actualizar previsión" title="Actualizar previsión">↻</button>
+    </header>
+
+    <section class="hero" aria-label="El tiempo ahora">
+      <div class="hero-bg">
+        <span class="celestial"></span>
+        <span class="cloud cloud-one"></span>
+        <span class="cloud cloud-two"></span>
+        <span class="rain-layer"></span>
+        <span class="snow-layer"></span>
+        <span class="fog-layer"></span>
+        <span class="lightning"></span>
+        <div class="cordoba-skyline" aria-hidden="true"></div>
+      </div>
+      <div id="hero-visual-note" class="visual-note" aria-live="polite"></div>
+      <div id="demo-summary" class="demo-summary" hidden><strong id="demo-summary-title">SIMULACIÓN VISUAL</strong><span>Los datos y el texto de la previsión son reales.</span></div>
+      <div class="eyebrow"><span class="live-dot"></span> CÓRDOBA CAPITAL · ESPAÑA <span id="hero-state" class="hero-state">AHORA</span></div>
+      <div id="today-date" class="today-date">Consultando previsión…</div>
+      <div class="current-row">
+        <span id="current-icon" class="weather-symbol">◌</span>
+        <div>
+          <div class="temp"><span id="current-temp">--</span><small>°C</small></div><div id="temp-kind" class="temp-kind">Temperatura actual</div>
+          <div id="current-desc" class="current-desc">Cargando datos meteorológicos</div>
+        </div>
+      </div>
+      <div class="hero-metrics">
+        <span>↑ <b id="current-high">--°</b> máx.</span>
+        <span>↓ <b id="current-low">--°</b> mín.</span>
+        <span>☂ <b id="current-rain">--%</b> lluvia</span>
+      </div>
+      <div class="hero-chips">
+        <div class="hero-chip"><small id="feels-label">Sensación</small><b id="current-feels">--°</b></div>
+        <div class="hero-chip"><small id="humidity-label">Humedad</small><b id="current-humidity">--%</b></div>
+        <div class="hero-chip"><small id="wind-label">Viento</small><b id="current-wind">-- km/h</b></div>
+      </div>
+    </section>
+
+    <div id="status" class="status" role="status" aria-live="polite">Conectando con Open-Meteo…</div>
+
+    <section class="demo-panel" aria-label="Probador de ambientes">
+      <div class="demo-heading">
+        <div><span class="overline">LABORATORIO QA</span><h2>Probar ambientes <span class="demo-mini">solo visual</span></h2></div>
+        <label class="demo-toggle"><input id="demo-enabled" type="checkbox"/><span>Demo</span></label>
+      </div>
+      <div id="demo-controls" class="demo-controls" hidden>
+        <label>Tiempo
+          <select id="demo-weather">
+            <option value="clear">☀ Despejado</option><option value="partly">⛅ Poco nuboso</option>
+            <option value="cloudy">☁ Nublado</option><option value="rain">🌧 Lluvia</option>
+            <option value="storm">⛈ Tormenta</option><option value="fog">≋ Niebla</option>
+            <option value="snow">❄ Nieve</option>
+          </select>
+        </label>
+        <label>Ambiente
+          <select id="demo-time"><option value="morning">Amanecer</option><option value="day">Día</option><option value="sunset">Atardecer</option><option value="night">Noche</option></select>
+        </label>
+        <p class="demo-note">🧪 Solo cambian el cielo y los efectos. La temperatura, el icono meteorológico de la izquierda, la previsión y el Consejo de Manolo muestran datos reales.</p>
+      </div>
+    </section>
+
+    <section class="panel forecast">
+      <div class="section-heading">
+        <div><span class="overline">PRÓXIMOS DÍAS</span><h2>Elige un día</h2></div>
+        <span class="section-side">7 días <span aria-hidden="true">↘</span></span>
+      </div>
+      <div id="day-list" class="day-list" role="group" aria-label="Seleccionar día de la previsión"><div class="empty-small">La previsión aparecerá aquí al conectar.</div></div>
+    </section>
+
+    <section id="detail" class="panel detail" aria-live="polite">
+      <div class="section-heading">
+        <div><span class="overline">DÍA SELECCIONADO</span><h2 id="selected-title">—</h2></div>
+        <span id="selected-icon" class="detail-icon">◌</span>
+      </div>
+      <p id="selected-description" class="muted">Selecciona un día para ver la previsión detallada.</p>
+      <div class="detail-metrics">
+        <div><small>MÁXIMA</small><strong id="detail-high">--°</strong></div>
+        <div><small>MÍNIMA</small><strong id="detail-low">--°</strong></div>
+        <div><small>LLUVIA</small><strong id="detail-rain">--%</strong></div>
+      </div>
+      <div class="mini-heading">Temperatura a lo largo del día</div>
+      <div id="day-chart" class="chart" aria-label="Gráfico de temperatura">—</div>
+      <div class="mini-heading">Previsión por horas</div>
+      <div id="hour-list" class="hour-list">—</div>
+      <div id="day-extras" class="extras"></div>
+    </section>
+
+    <section class="advice">
+      <div class="advice-topline">
+        <div class="advice-label">💡 EL CONSEJO DE MANOLO</div>
+        <span id="advice-pill" class="advice-pill advice-pill--ok">Terraza</span>
+      </div>
+      <p id="advice-text">A ver qué dice el cielo, que hablar sin datos es de cuñados. 😂</p>
+      <div class="advice-subblock">
+        <div class="advice-subtitle">Recomendación práctica</div>
+        <p id="advice-practical" class="advice-practical">Cuando elijas un día, aquí te diré lo más útil para salir, pasear o esconderte del calor.</p>
+      </div>
+      <small id="advice-context">Consejo adaptado al día que selecciones</small>
+    </section>
+
+    <section class="links-panel">
+      <h2>Centro de operaciones</h2>
+      <div class="quick-links">
+        <a href="https://www.aemet.es/es/eltiempo/observacion/radar" target="_blank" rel="noopener noreferrer"><span>📡</span><b>Radar</b><small>AEMET ↗</small></a>
+        <a href="https://www.aemet.es/es/eltiempo/prediccion/avisos" target="_blank" rel="noopener noreferrer"><span>⚠</span><b>Avisos</b><small>AEMET ↗</small></a>
+        <a href="https://www.aemet.es/es/eltiempo/prediccion/municipios/cordoba-id14021" target="_blank" rel="noopener noreferrer"><span>📅</span><b>Pronóstico</b><small>AEMET ↗</small></a>
+      </div>
+    </section>
+
+    <footer>
+      <span>Hecho con ☕ y un poco de cachondeo.</span>
+      <span>Datos: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Hora peninsular</span>
+      <small>Las previsiones son estimaciones. Para alertas oficiales, consulta AEMET. La app no envía avisos automáticos.</small>
+    </footer>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>

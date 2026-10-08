@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 320" fill="none">
+<defs><linearGradient id="stone" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e1c293"/><stop offset="1" stop-color="#96734f"/></linearGradient><linearGradient id="river" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#55749d"/><stop offset="1" stop-color="#0a2748"/></linearGradient></defs>
+<!-- Silueta ilustrada inspirada en la Mezquita-Catedral y el Puente Romano, no imagen fotográfica. -->
+<path d="M0 253H680V320H0z" fill="url(#river)" opacity=".5"/>
+<g fill="url(#stone)" stroke="#795a3d" stroke-width="3">
+<path d="M288 167H655V228H288z"/><path d="M326 136H604V168H326z"/><path d="M351 102H577V136H351z"/><path d="M394 88H555V106H394z"/>
+<path d="M462 74C464 47 492 38 514 73V88H462z"/><path d="M470 73C471 51 504 49 508 73" stroke="#b99b70"/>
+<path d="M368 109V75H398V109z"/><path d="M372 72V53H393V72z"/>
+<path d="M375 50L384 32L392 50z"/><path d="M380 32V23M374 28H387" stroke="#e3be75"/>
+<path d="M548 104V82H565V104z"/>
+</g>
+<g fill="#324968" opacity=".85"><path d="M337 181a13 13 0 0 1 26 0v25h-26z"/><path d="M375 181a13 13 0 0 1 26 0v25h-26z"/><path d="M415 181a13 13 0 0 1 26 0v25h-26z"/><path d="M457 181a13 13 0 0 1 26 0v25h-26z"/><path d="M497 181a13 13 0 0 1 26 0v25h-26z"/><path d="M537 181a13 13 0 0 1 26 0v25h-26z"/></g>
+<path d="M8 216Q201 210 355 222H680V254H0z" fill="#b89a75" stroke="#806348" stroke-width="3"/>
+<g fill="#0a2d51" stroke="#b89a75" stroke-width="7">
+<path d="M18 255v-7a24 24 0 0 1 48 0v7"/><path d="M83 255v-9a25 25 0 0 1 50 0v9"/><path d="M148 255v-11a27 27 0 0 1 54 0v11"/><path d="M215 255v-12a28 28 0 0 1 56 0v12"/><path d="M286 255v-12a28 28 0 0 1 56 0v12"/><path d="M356 255v-12a28 28 0 0 1 56 0v12"/><path d="M426 255v-12a28 28 0 0 1 56 0v12"/><path d="M496 255v-12a28 28 0 0 1 56 0v12"/><path d="M566 255v-12a28 28 0 0 1 56 0v12"/>
+</g>
+<g fill="#ffdc9b"><path d="M380 86h8v12h-8zM480 64h14v17h-14zM341 153h8v10h-8zM555 149h8v10h-8z"/></g>
+<path d="M13 288Q187 296 346 287T673 292" stroke="#f7cb87" stroke-width="3" stroke-dasharray="45 35" opacity=".4"/>
+</svg>

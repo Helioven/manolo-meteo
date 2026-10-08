@@ -1,0 +1,18 @@
+MANOLO METEO 1.4 — CÓRDOBA
+
+1. Extrae todo el ZIP en una carpeta nueva.
+2. Abre index.html con Chrome o Edge. Requiere internet para actualizar la previsión.
+3. Pulsa cualquier día: cambian cabecera, detalles, gráfico y Consejo de Manolo.
+4. Activa «Demo» para comprobar visualmente: sol, nubes, lluvia, tormenta, niebla, nieve; amanecer, día, atardecer o noche. Los datos reales NO se modifican en demo.
+5. Desactiva «Demo» para volver al aspecto según tiempo y hora de Córdoba.
+
+Los datos provienen de Open-Meteo. El radar y los avisos oficiales se abren en AEMET.
+Para instalar como PWA, la app debe estar alojada en HTTPS o localhost.
+La visualización no sustituye avisos oficiales.
+No hay alertas push automáticas.
+
+VERSIÓN 1.5.3: arreglo de la animación de lluvia (antes se movía fuera del cielo).
+
+Versión 1.6: sol, nubes y skyline refinados; lluvia, tormenta y nieve de 1.5.5 sin cambios.
+
+Versión 1.6.1: iconos de cielo nublado coherentes, nota de demo explícita, amanecer y sol/luna refinados.
