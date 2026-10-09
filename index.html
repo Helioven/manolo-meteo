@@ -7,7 +7,7 @@
   <meta name="description" content="Manolo Meteo: previsión de siete días en tus localidades favoritas, ciclo solar y consejos con arte." />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="style.css?v=1.8.1" />
+  <link rel="stylesheet" href="style.css?v=1.8.2" />
   <title>Manolo Meteo · Tu localidad</title>
 </head>
 <body data-time="night" data-weather="clear">
@@ -26,7 +26,7 @@
     <section class="location-panel" aria-label="Localidad actual y búsqueda">
       <div class="location-toolbar">
         <div class="location-heading"><span class="location-pin" aria-hidden="true">📍</span><div class="location-identity"><strong id="current-location-name">Córdoba, Andalucía, España</strong><small id="location-favorite-label">★ Favorita</small></div></div>
-        <button id="location-toggle" class="location-toggle" type="button" aria-expanded="false" aria-controls="location-expanded">⌕ Cambiar ciudad <span aria-hidden="true">⌄</span></button>
+        <button id="location-toggle" class="location-toggle" type="button" aria-expanded="false" aria-controls="location-expanded" aria-label="Cambiar ciudad"><span class="location-toggle-icon" aria-hidden="true">⌕</span><span class="location-toggle-label">Cambiar ciudad</span><span class="location-chevron" aria-hidden="true">⌄</span></button>
       </div>
       <div id="location-expanded" class="location-expanded" hidden>
         <form id="location-form" class="location-form" autocomplete="off">
@@ -152,11 +152,11 @@
     </section>
 
     <footer>
-      <span>Hecho con ☕ y un poco de cachondeo. · <strong>v1.8.1</strong></span>
+      <span>Hecho con ☕ y un poco de cachondeo. · <strong>v1.8.2</strong></span>
       <span>Datos: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Hora local de la localidad</span>
       <small>Las previsiones son estimaciones. Para alertas oficiales en España, consulta AEMET o el servicio meteorológico de tu país. La app no envía avisos automáticos.</small>
     </footer>
   </main>
-  <script src="app.js?v=1.8.1" defer></script>
+  <script src="app.js?v=1.8.2" defer></script>
 </body>
 </html>
