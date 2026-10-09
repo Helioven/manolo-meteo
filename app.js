@@ -23,17 +23,19 @@ function renderFavorite() {
   const saved = state.favorite;
   const currentIsFavorite = isSameCity(state.city,saved);
   el('favorite-city-name').textContent = cityLabel(saved);
-  el('favorite-open').disabled = currentIsFavorite;
-  el('favorite-open').textContent = currentIsFavorite ? 'Mostrando favorita ✓' : 'Ver pronóstico →';
-  el('favorite-save').disabled = currentIsFavorite;
-  el('favorite-save').textContent = currentIsFavorite ? '★ Ya es favorita' : '☆ Guardar esta ciudad';
+  el('favorite-open').hidden = currentIsFavorite;
+  el('favorite-save').hidden = currentIsFavorite;
+  el('favorite-actions').hidden = currentIsFavorite;
+  el('favorite-open').textContent = 'Ver pronóstico →';
+  el('favorite-save').textContent = '☆ Guardar esta ciudad';
   el('location-favorite-label').textContent = currentIsFavorite ? '★ Favorita' : '📍 Consulta temporal';
+  el('location-reset').hidden = isSameCity(state.city, DEFAULT_CITY);
   el('favorite-current-status').textContent = currentIsFavorite ? 'Estás viendo tu ciudad favorita.' : 'Puedes volver a ella con un toque.';
 }
 function saveCurrentFavorite() {
   state.favorite = {...state.city};
   try { localStorage.setItem(FAVORITE_KEY,JSON.stringify(state.favorite)); } catch (_) {}
-  el('location-hint').textContent = '★ Nueva ciudad favorita guardada en este dispositivo.';
+  el('location-hint').textContent = '★ Favorita actualizada correctamente.';
   renderFavorite();
 }
 const zone = () => state.city.timezone;
