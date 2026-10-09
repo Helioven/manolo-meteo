@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="style.css" />
-  <title>Manolo Meteo · Córdoba</title>
+  <title>Manolo Meteo · Tu localidad</title>
 </head>
 <body data-time="night" data-weather="clear">
   <main class="shell">
@@ -17,11 +17,23 @@
         <span class="brand-icon">☀</span>
         <div>
           <div class="brand-title">MANOLO <strong>METEO</strong></div>
-          <small>ESTACIÓN METEOROLÓGICA · CÓRDOBA</small>
+          <small>ESTACIÓN METEOROLÓGICA · <span id="brand-location">CÓRDOBA</span></small>
         </div>
       </div>
       <button id="refresh" class="icon-button" aria-label="Actualizar previsión" title="Actualizar previsión">↻</button>
     </header>
+
+    <section class="location-panel" aria-label="Elegir localidad">
+      <div class="location-heading"><span>📍 <strong id="current-location-name">Córdoba, España</strong></span><small id="location-favorite-label">★ Localidad guardada</small></div>
+      <form id="location-form" class="location-form" autocomplete="off">
+        <label class="visually-hidden" for="location-search">Buscar localidad</label>
+        <input id="location-search" type="search" minlength="2" maxlength="80" placeholder="Buscar ciudad, por ejemplo Cracovia…" aria-describedby="location-hint" required />
+        <button type="submit" id="location-submit">Buscar</button>
+      </form>
+      <div id="location-hint" class="location-hint" aria-live="polite">Busca y elige una localidad. La elegida se guardará como favorita en este dispositivo.</div>
+      <div id="location-results" class="location-results" role="group" aria-label="Resultados de búsqueda" hidden></div>
+      <button type="button" id="location-reset" class="location-reset">↩ Volver a Córdoba</button>
+    </section>
 
     <section class="hero" aria-label="El tiempo ahora">
       <div class="hero-bg">
@@ -36,7 +48,7 @@
       </div>
       <div id="hero-visual-note" class="visual-note" aria-live="polite"></div>
       <div id="demo-summary" class="demo-summary" hidden><strong id="demo-summary-title">SIMULACIÓN VISUAL</strong><span>Los datos y el texto de la previsión son reales.</span></div>
-      <div class="eyebrow"><span class="live-dot"></span> CÓRDOBA CAPITAL · ESPAÑA <span id="hero-state" class="hero-state">AHORA</span></div>
+      <div class="eyebrow"><span class="live-dot"></span> <span id="hero-location">CÓRDOBA · ESPAÑA</span> <span id="hero-state" class="hero-state">AHORA</span></div>
       <div id="today-date" class="today-date">Consultando previsión…</div>
       <div class="current-row">
         <span id="current-icon" class="weather-symbol">◌</span>
@@ -50,6 +62,7 @@
         <span>↓ <b id="current-low">--°</b> mín.</span>
         <span>☂ <b id="current-rain">--%</b> lluvia</span>
       </div>
+      <div class="solar-strip" aria-label="Ciclo solar del día seleccionado"><span>🌅 Amanecer <b id="sunrise">--:--</b></span><span>🌇 Atardecer <b id="sunset">--:--</b></span><small id="daylight">Horas de luz: —</small></div>
       <div class="hero-chips">
         <div class="hero-chip"><small id="feels-label">Sensación</small><b id="current-feels">--°</b></div>
         <div class="hero-chip"><small id="humidity-label">Humedad</small><b id="current-humidity">--%</b></div>
@@ -119,7 +132,7 @@
       <small id="advice-context">Consejo adaptado al día que selecciones</small>
     </section>
 
-    <section class="links-panel">
+    <section class="links-panel" id="official-links">
       <h2>Centro de operaciones</h2>
       <div class="quick-links">
         <a href="https://www.aemet.es/es/eltiempo/observacion/radar" target="_blank" rel="noopener noreferrer"><span>📡</span><b>Radar</b><small>AEMET ↗</small></a>
@@ -130,8 +143,8 @@
 
     <footer>
       <span>Hecho con ☕ y un poco de cachondeo.</span>
-      <span>Datos: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Hora peninsular</span>
-      <small>Las previsiones son estimaciones. Para alertas oficiales, consulta AEMET. La app no envía avisos automáticos.</small>
+      <span>Datos: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Hora local de la localidad</span>
+      <small>Las previsiones son estimaciones. Para alertas oficiales en España, consulta AEMET o el servicio meteorológico de tu país. La app no envía avisos automáticos.</small>
     </footer>
   </main>
   <script src="app.js" defer></script>
