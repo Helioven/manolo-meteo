@@ -507,3 +507,29 @@ body[data-time="night"] .hero .celestial{-webkit-mask-image:radial-gradient(circ
  .location-pin{font-size:15px}
 }
 @media(max-width:360px){.location-toolbar{flex-wrap:wrap}.location-toggle{margin-left:auto}}
+
+/* v1.8.2 — Cabecera móvil: jerarquía clara, controles discretos */
+.location-panel{padding:10px 12px}
+.location-toolbar{align-items:center;gap:10px}
+.location-toolbar .location-heading{align-items:center;gap:8px}
+.location-pin{display:inline-flex;align-items:center;justify-content:center;width:20px;height:24px;font-size:16px;line-height:1;flex:0 0 20px}
+.location-identity{gap:3px;min-width:0}
+.location-identity strong{font-size:14px;line-height:1.33;overflow-wrap:normal;word-break:normal}
+.location-identity small{line-height:1.25}
+.location-toggle{min-height:40px;padding:8px 10px;gap:5px;border-radius:10px;background:rgba(39,105,154,.43);border-color:rgba(117,168,205,.7);font-size:11px;white-space:nowrap}
+.location-toggle-icon{font-size:18px;line-height:1;font-weight:700}
+.location-toggle-label{font-size:11px}
+.location-toggle .location-chevron{font-size:14px;line-height:1}
+@media(max-width:520px){
+  .location-toolbar{gap:8px}
+  .location-panel{padding:10px 12px}
+  .location-toolbar .location-heading{gap:7px}
+  .location-identity strong{font-size:13px}
+  .location-toggle{min-height:38px;padding:7px 9px}
+}
+@media(max-width:390px){
+  .location-toggle{width:40px;min-width:40px;padding:7px 5px;gap:0}
+  .location-toggle-label{display:none}
+  .location-toggle .location-chevron{font-size:12px}
+}
+@media(max-width:360px){.location-toolbar{flex-wrap:nowrap}.location-toggle{margin-left:0}}
