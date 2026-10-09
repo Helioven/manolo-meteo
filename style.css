@@ -533,3 +533,27 @@ body[data-time="night"] .hero .celestial{-webkit-mask-image:radial-gradient(circ
   .location-toggle .location-chevron{font-size:12px}
 }
 @media(max-width:360px){.location-toolbar{flex-wrap:nowrap}.location-toggle{margin-left:0}}
+
+/* Manolo Meteo 1.9 — previsión inmediata de seis horas */
+.next-hours-panel{margin:12px 0;border-color:#406f99;padding:17px 17px 14px}
+.next-hours-heading{margin-bottom:1px}
+.next-hours-heading h2{font-size:20px}
+.next-hours-caption{font-size:11px;color:#a7c8e1;margin:0 0 11px}
+.next-hours-list{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(84px,1fr);gap:8px;overflow-x:auto;overscroll-behavior-inline:contain;padding:2px 2px 9px;scrollbar-width:thin;scrollbar-color:#4779a4 transparent}
+.next-hour-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:119px;background:rgba(15,49,79,.82);border:1px solid #416d95;border-radius:13px;padding:9px 5px;font-variant-numeric:tabular-nums}
+.next-hour-time{font-size:12px;color:#bfd9ee;font-weight:700}
+.next-hour-icon{font-size:26px;line-height:1.4}
+.next-hour-temp{font-size:19px;color:#fff}
+.next-hour-rain{font-size:12px;color:#acd7f5;white-space:nowrap}
+.next-hours-advice{font-size:13px;line-height:1.5;margin:7px 0 8px;padding:10px 12px;border-radius:11px;background:#153b5a;border:1px solid #3c719d;color:#e5f3ff}
+.next-hours-advice--dry{border-color:rgba(104,219,174,.5)}
+.next-hours-advice--mixed{border-color:rgba(255,207,132,.5)}
+.next-hours-advice--wet{border-color:rgba(255,157,149,.68)}
+.next-hours-disclaimer{display:block;color:#9cbdd7;font-size:10px;line-height:1.45}
+@media(max-width:520px){
+ .next-hours-panel{padding:13px 11px 12px}
+ .next-hours-list{grid-auto-columns:83px;gap:7px}
+ .next-hour-card{min-height:112px;padding:8px 4px}
+ .next-hours-heading h2{font-size:19px}
+ .next-hours-advice{font-size:12px}
+}
