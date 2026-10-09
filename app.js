@@ -31,11 +31,11 @@ function renderFavorite() {
   el('location-favorite-label').textContent = currentIsFavorite ? '★ Favorita' : '📍 Consulta temporal';
   el('location-reset').hidden = isSameCity(state.city, DEFAULT_CITY);
   el('favorite-current-status').textContent = currentIsFavorite ? 'Estás viendo tu ciudad favorita.' : 'Puedes volver a ella con un toque.';
+  el('location-hint').textContent = currentIsFavorite ? '★ Esta localidad ya está guardada como favorita.' : 'Puedes consultar esta ciudad sin cambiar tu favorita, o pulsar ☆ para guardarla.';
 }
 function saveCurrentFavorite() {
   state.favorite = {...state.city};
   try { localStorage.setItem(FAVORITE_KEY,JSON.stringify(state.favorite)); } catch (_) {}
-  el('location-hint').textContent = '★ Favorita actualizada correctamente.';
   renderFavorite();
 }
 const zone = () => state.city.timezone;
@@ -60,7 +60,6 @@ function setCity(city) {
   el('location-search').value = '';
   el('location-results').replaceChildren();
   el('location-results').hidden = true;
-  el('location-hint').textContent = 'Mostrando la localidad seleccionada. Usa ☆ para guardarla como favorita.';
   updateCityUI();
   state.data = null;
   el('current-icon').textContent = '◌';
