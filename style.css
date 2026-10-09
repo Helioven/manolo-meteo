@@ -481,3 +481,29 @@ body.outside-cordoba .cordoba-skyline{display:none!important}
 @media(max-width:520px){.multi-favorites{padding:9px 11px;margin-bottom:10px}.city-chip-open{font-size:12px}.favorite-list{gap:6px}}
 /* Luna creciente coherente con el icono nocturno */
 body[data-time="night"] .hero .celestial{-webkit-mask-image:radial-gradient(circle at 73% 39%,transparent 0 48%,#000 50%);mask-image:radial-gradient(circle at 73% 39%,transparent 0 48%,#000 50%)}
+
+/* 1.8.1 · selector de ciudad compacto y desplegable */
+.location-panel{padding:11px 13px;margin-bottom:10px}
+.location-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0}
+.location-toolbar .location-heading{display:flex;align-items:flex-start;min-width:0;flex:1;gap:9px}
+.location-pin{font-size:17px;flex-shrink:0;line-height:1.35}
+.location-identity{display:flex;flex-direction:column;gap:1px;min-width:0}
+.location-identity strong{line-height:1.25;overflow-wrap:anywhere;font-size:14px}
+.location-identity small{color:#f4d391;font-size:11px}
+.location-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;background:rgba(39,105,154,.65);border:1px solid #5b99c6;color:#e9f6ff;border-radius:11px;padding:9px 11px;min-height:42px;font:inherit;font-size:12px;font-weight:750;cursor:pointer;touch-action:manipulation}
+.location-toggle:hover{background:#2a6590}
+.location-toggle:focus-visible{outline:2px solid #ffd18b;outline-offset:2px}
+.location-toggle span{font-size:17px}
+.location-expanded[hidden]{display:none!important}
+.location-expanded{border-top:1px solid rgba(139,188,222,.24);margin-top:11px;padding-top:9px}
+.location-expanded .location-form{margin-top:0}
+.location-expanded .location-reset{display:inline-flex;margin-top:4px}
+.location-expanded .location-reset[hidden]{display:none!important}
+@media(max-width:520px){
+ .location-panel{padding:10px 12px}
+ .location-toolbar{gap:7px}
+ .location-toggle{padding:8px 9px;font-size:11px;gap:4px}
+ .location-identity strong{font-size:13px}
+ .location-pin{font-size:15px}
+}
+@media(max-width:360px){.location-toolbar{flex-wrap:wrap}.location-toggle{margin-left:auto}}
