@@ -424,3 +424,25 @@ body.outside-cordoba .cordoba-skyline{display:none!important}
 
 /* Hide irrelevant return-to-Córdoba link on Córdoba itself */
 .location-reset[hidden]{display:none!important}
+
+/* 1.7.7 - detalles de interfaz: menos acciones redundantes, accesibilidad tactil */
+.favorite-actions[hidden],.favorite-actions button[hidden]{display:none!important}
+.location-panel{box-shadow:0 7px 20px rgba(0,10,30,.12)}
+.location-heading strong,.favorite-copy strong{overflow-wrap:anywhere}
+.location-form input::placeholder{color:#9db9d2;opacity:1}
+.location-form input:focus-visible{outline:2px solid #ffd188;outline-offset:2px}
+.location-form button,.location-results button,.location-reset,.favorite-actions button,.day-card{touch-action:manipulation}
+@media(max-width:520px){
+ .location-panel{padding:12px 13px}
+ .location-hint{line-height:1.4;margin-top:7px}
+ .location-form button{min-height:44px;padding:8px 12px}
+ .location-form input{min-height:44px}
+ .location-results button{min-height:44px}
+ .favorite-panel{padding:13px 14px}
+ .favorite-copy strong{font-size:15px}
+ .favorite-actions button{min-height:44px}
+ .hero .eyebrow{line-height:1.55}
+ .current-row{margin-top:10px;margin-bottom:14px}
+ .solar-strip{line-height:1.55}
+ .hour-item,.extra,.hero-chip{font-variant-numeric:tabular-nums}
+}
