@@ -2,6 +2,7 @@
 const API = 'https://api.open-meteo.com/v1/forecast';
 const GEOCODING_API = 'https://geocoding-api.open-meteo.com/v1/search';
 const FAVORITE_KEY = 'manolo-meteo-favorite-v1';
+const VIEW_KEY = 'manolo-meteo-viewed-v1';
 const DEFAULT_CITY = Object.freeze({id:0,name:'Córdoba',admin1:'Andalucía',country:'España',country_code:'ES',latitude:37.8795,longitude:-4.7803,timezone:'Europe/Madrid'});
 const el = id => document.getElementById(id);
 function validCity(c) { return c && typeof c.name === 'string' && c.name.length <= 100 && Number.isFinite(c.latitude) && Math.abs(c.latitude) <= 90 && Number.isFinite(c.longitude) && Math.abs(c.longitude) <= 180 && typeof c.timezone === 'string' && /^[A-Za-z_+\/-]+$/.test(c.timezone); }
@@ -9,7 +10,32 @@ function favoriteCity() {
   try { const c = JSON.parse(localStorage.getItem(FAVORITE_KEY) || 'null'); return validCity(c) ? c : DEFAULT_CITY; }
   catch (_) { return DEFAULT_CITY; }
 }
-const state = { data: null, selected: 0, demo: false, demoWeather: 'clear', demoTime: 'day', city: favoriteCity(), requestId:0, searchId:0 };
+function viewedCity() {
+  try { const c = JSON.parse(localStorage.getItem(VIEW_KEY) || 'null'); return validCity(c) ? c : favoriteCity(); }
+  catch (_) { return favoriteCity(); }
+}
+const state = { data: null, selected: 0, demo: false, demoWeather: 'clear', demoTime: 'day', city: viewedCity(), favorite: favoriteCity(), requestId:0, searchId:0 };
+function isSameCity(a,b) {
+  return a && b && Number.isFinite(a.latitude) && Number.isFinite(b.latitude) &&
+    Math.abs(a.latitude-b.latitude) < 0.001 && Math.abs(a.longitude-b.longitude) < 0.001;
+}
+function renderFavorite() {
+  const saved = state.favorite;
+  const currentIsFavorite = isSameCity(state.city,saved);
+  el('favorite-city-name').textContent = cityLabel(saved);
+  el('favorite-open').disabled = currentIsFavorite;
+  el('favorite-open').textContent = currentIsFavorite ? 'Mostrando favorita ✓' : 'Ver pronóstico →';
+  el('favorite-save').disabled = currentIsFavorite;
+  el('favorite-save').textContent = currentIsFavorite ? '★ Ya es favorita' : '☆ Guardar esta ciudad';
+  el('location-favorite-label').textContent = currentIsFavorite ? '★ Favorita' : '📍 Consulta temporal';
+  el('favorite-current-status').textContent = currentIsFavorite ? 'Estás viendo tu ciudad favorita.' : 'Puedes volver a ella con un toque.';
+}
+function saveCurrentFavorite() {
+  state.favorite = {...state.city};
+  try { localStorage.setItem(FAVORITE_KEY,JSON.stringify(state.favorite)); } catch (_) {}
+  el('location-hint').textContent = '★ Nueva ciudad favorita guardada en este dispositivo.';
+  renderFavorite();
+}
 const zone = () => state.city.timezone;
 const localeDate = (date, options) => new Intl.DateTimeFormat('es-ES', { ...options, timeZone:'UTC' }).format(new Date(`${date}T12:00:00Z`));
 const cacheKey = () => `manolo-meteo-forecast-v1-7-${state.city.latitude.toFixed(4)}-${state.city.longitude.toFixed(4)}`;
@@ -22,17 +48,28 @@ function updateCityUI() {
   el('official-links').hidden = c.id !== DEFAULT_CITY.id || c.country_code !== 'ES';
   document.body.classList.toggle('outside-cordoba', !(Math.abs(c.latitude-DEFAULT_CITY.latitude)<.03 && Math.abs(c.longitude-DEFAULT_CITY.longitude)<.03));
   document.title = `Manolo Meteo · ${c.name}`;
+  renderFavorite();
 }
 function setCity(city) {
   if (!validCity(city)) return;
   state.city = {id:city.id ?? null,name:city.name,admin1:city.admin1 || '',country:city.country || '',country_code:city.country_code || '',latitude:city.latitude,longitude:city.longitude,timezone:city.timezone};
-  try { localStorage.setItem(FAVORITE_KEY, JSON.stringify(state.city)); } catch (_) {}
+  try { localStorage.setItem(VIEW_KEY, JSON.stringify(state.city)); } catch (_) {}
   el('location-search').value = '';
   el('location-results').replaceChildren();
   el('location-results').hidden = true;
-  el('location-hint').textContent = '★ Localidad guardada en este dispositivo.';
+  el('location-hint').textContent = 'Mostrando la localidad seleccionada. Usa ☆ para guardarla como favorita.';
   updateCityUI();
   state.data = null;
+  el('current-icon').textContent = '◌';
+  el('current-high').textContent = '--°';
+  el('current-low').textContent = '--°';
+  el('current-rain').textContent = '--%';
+  el('current-feels').textContent = '--°';
+  el('current-humidity').textContent = '--%';
+  el('current-wind').textContent = '-- km/h';
+  el('sunrise').textContent = '--:--';
+  el('sunset').textContent = '--:--';
+  el('daylight').textContent = 'Horas de luz: —';
   el('current-temp').textContent = '--';
   el('current-desc').textContent = 'Consultando la nueva localidad…';
   el('day-list').textContent = 'Cargando previsión…';
@@ -65,7 +102,7 @@ async function searchCities(event) {
       results.appendChild(button);
     }
     results.hidden = false;
-    el('location-hint').textContent = 'Elige un resultado para cargar el tiempo y guardar tu localidad.';
+    el('location-hint').textContent = 'Elige un resultado para consultar su previsión. Puedes guardarlo como favorito después.';
   } catch (err) {
     if (id === state.searchId) el('location-hint').textContent = 'No se pudo buscar. Comprueba la conexión e inténtalo otra vez.';
   } finally {
@@ -464,6 +501,8 @@ async function load() {
 }
 
 el('location-form').addEventListener('submit', searchCities);
+el('favorite-open').addEventListener('click', () => { ++state.searchId; el('location-submit').disabled = false; setCity(state.favorite); });
+el('favorite-save').addEventListener('click', saveCurrentFavorite);
 el('location-search').addEventListener('input', () => { ++state.searchId; el('location-submit').disabled = false; el('location-results').hidden = true; });
 el('location-reset').addEventListener('click', () => { ++state.searchId; el('location-submit').disabled = false; setCity(DEFAULT_CITY); });
 updateCityUI();
