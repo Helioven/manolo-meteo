@@ -460,3 +460,24 @@ body.outside-cordoba .cordoba-skyline{display:none!important}
  .location-form{margin-top:8px}
  .location-heading{gap:6px}
 }
+
+/* 1.8 · Ciudades favoritas accesibles */
+.multi-favorites{background:rgba(14,40,72,.94);border:1px solid #52789e;border-radius:15px;padding:10px 13px;margin:0 0 12px}
+.multi-favorites-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;color:#ffdda4;font-size:11px;font-weight:800;letter-spacing:1px}
+.multi-favorites-heading small{color:#a4d3ef;font-size:11px}
+.favorite-list{display:flex;gap:7px;overflow-x:auto;padding:2px 0 5px;scrollbar-width:thin;scrollbar-color:#5c86a7 transparent}
+.city-chip{display:flex;flex:none;align-items:center;border:1px solid #51769b;border-radius:999px;background:#102a48;overflow:hidden}
+.city-chip.active{border-color:#ffcc7b;background:#235475}
+.city-chip-open,.city-chip-remove{color:#f2f8ff;background:transparent;border:0;min-height:42px;cursor:pointer;touch-action:manipulation;font:inherit}
+.city-chip-open{padding:7px 6px 7px 13px;font-weight:650;font-size:13px}
+.city-chip.active .city-chip-open:before{content:'★ ';color:#ffd28b}
+.city-chip-remove{font-size:23px;padding:5px 11px 5px 7px;color:#b5d1e4}
+.city-chip-remove:hover{color:#ffc0c0}
+.city-chip button:focus-visible,.favorite-add:focus-visible{outline:2px solid #ffce7d;outline-offset:-3px}
+.favorite-add{display:block;background:rgba(255,207,125,.10);color:#ffe5b7;border:1px solid #af966e;border-radius:10px;font-size:12px;font-weight:700;padding:10px 12px;min-height:42px;margin-top:7px;cursor:pointer}
+.favorite-add:disabled{opacity:.5;cursor:default}
+.favorite-add[hidden],.favorite-empty[hidden]{display:none!important}
+.favorite-empty{font-size:12px;color:#aac8df;margin:5px 0}
+@media(max-width:520px){.multi-favorites{padding:9px 11px;margin-bottom:10px}.city-chip-open{font-size:12px}.favorite-list{gap:6px}}
+/* Luna creciente coherente con el icono nocturno */
+body[data-time="night"] .hero .celestial{-webkit-mask-image:radial-gradient(circle at 73% 39%,transparent 0 48%,#000 50%);mask-image:radial-gradient(circle at 73% 39%,transparent 0 48%,#000 50%)}
