@@ -421,3 +421,6 @@ body.outside-cordoba .cordoba-skyline{display:none!important}
   .weather-symbol{font-size:58px;min-width:58px}
 }
 @media(prefers-reduced-motion:reduce){.favorite-actions button{transition:none}}
+
+/* Hide irrelevant return-to-Córdoba link on Córdoba itself */
+.location-reset[hidden]{display:none!important}
