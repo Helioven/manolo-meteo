@@ -7,7 +7,7 @@
   <meta name="description" content="Manolo Meteo: previsión de siete días en tus localidades favoritas, ciclo solar y consejos con arte." />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="style.css?v=1.8.2" />
+  <link rel="stylesheet" href="style.css?v=1.9.0" />
   <title>Manolo Meteo · Tu localidad</title>
 </head>
 <body data-time="night" data-weather="clear">
@@ -82,6 +82,17 @@
 
     <div id="status" class="status" role="status" aria-live="polite">Conectando con Open-Meteo…</div>
 
+    <section class="panel next-hours-panel" aria-label="Previsión de las próximas seis horas">
+      <div class="section-heading next-hours-heading">
+        <div><span class="overline">LO QUE VIENE</span><h2>Próximas 6 horas</h2></div>
+        <span class="section-side" aria-hidden="true">↗</span>
+      </div>
+      <p id="next-hours-caption" class="next-hours-caption">Hora local · Open-Meteo</p>
+      <div id="next-hours-list" class="next-hours-list" role="group" aria-label="Condiciones y lluvia previstas por hora">Cargando previsión…</div>
+      <p id="next-hours-advice" class="next-hours-advice" aria-live="polite">Consultando las próximas horas…</p>
+      <small class="next-hours-disclaimer">Probabilidad de precipitación, no certeza de lluvia. Consulta los avisos oficiales ante situaciones adversas.</small>
+    </section>
+
     <section class="demo-panel" aria-label="Probador de ambientes">
       <div class="demo-heading">
         <div><span class="overline">LABORATORIO QA</span><h2>Probar ambientes <span class="demo-mini">solo visual</span></h2></div>
@@ -152,11 +163,11 @@
     </section>
 
     <footer>
-      <span>Hecho con ☕ y un poco de cachondeo. · <strong>v1.8.2</strong></span>
+      <span>Hecho con ☕ y un poco de cachondeo. · <strong>v1.9.0</strong></span>
       <span>Datos: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Hora local de la localidad</span>
       <small>Las previsiones son estimaciones. Para alertas oficiales en España, consulta AEMET o el servicio meteorológico de tu país. La app no envía avisos automáticos.</small>
     </footer>
   </main>
-  <script src="app.js?v=1.8.2" defer></script>
+  <script src="app.js?v=1.9.0" defer></script>
 </body>
 </html>
