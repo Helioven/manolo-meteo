@@ -22,6 +22,9 @@ function isSameCity(a,b) {
 function renderFavorite() {
   const saved = state.favorite;
   const currentIsFavorite = isSameCity(state.city,saved);
+  el('favorite-panel').classList.toggle('is-active', currentIsFavorite);
+  el('favorite-compact').hidden = !currentIsFavorite;
+  el('favorite-copy').hidden = currentIsFavorite;
   el('favorite-city-name').textContent = cityLabel(saved);
   el('favorite-open').hidden = currentIsFavorite;
   el('favorite-save').hidden = currentIsFavorite;
@@ -31,7 +34,8 @@ function renderFavorite() {
   el('location-favorite-label').textContent = currentIsFavorite ? '★ Favorita' : '📍 Consulta temporal';
   el('location-reset').hidden = isSameCity(state.city, DEFAULT_CITY);
   el('favorite-current-status').textContent = currentIsFavorite ? 'Estás viendo tu ciudad favorita.' : 'Puedes volver a ella con un toque.';
-  el('location-hint').textContent = currentIsFavorite ? '★ Esta localidad ya está guardada como favorita.' : 'Puedes consultar esta ciudad sin cambiar tu favorita, o pulsar ☆ para guardarla.';
+  el('location-hint').hidden = currentIsFavorite;
+  el('location-hint').textContent = currentIsFavorite ? '' : 'Puedes consultar esta ciudad sin cambiar tu favorita, o pulsar ☆ para guardarla.';
 }
 function saveCurrentFavorite() {
   state.favorite = {...state.city};
@@ -83,6 +87,7 @@ async function searchCities(event) {
   event.preventDefault();
   const query = el('location-search').value.trim();
   const results = el('location-results');
+  el('location-hint').hidden = false;
   if (query.length < 2) { el('location-hint').textContent = 'Escribe al menos dos letras.'; return; }
   const id = ++state.searchId;
   el('location-submit').disabled = true;
@@ -505,7 +510,14 @@ async function load() {
 el('location-form').addEventListener('submit', searchCities);
 el('favorite-open').addEventListener('click', () => { ++state.searchId; el('location-submit').disabled = false; setCity(state.favorite); });
 el('favorite-save').addEventListener('click', saveCurrentFavorite);
-el('location-search').addEventListener('input', () => { ++state.searchId; el('location-submit').disabled = false; el('location-results').hidden = true; });
+el('location-search').addEventListener('input', () => {
+  ++state.searchId;
+  el('location-submit').disabled = false;
+  el('location-results').hidden = true;
+  const typing = el('location-search').value.trim().length > 0;
+  el('location-hint').hidden = !typing && isSameCity(state.city,state.favorite);
+  if (typing) el('location-hint').textContent = 'Pulsa Buscar para encontrar localidades.';
+});
 el('location-reset').addEventListener('click', () => { ++state.searchId; el('location-submit').disabled = false; setCity(DEFAULT_CITY); });
 updateCityUI();
 el('demo-enabled').addEventListener('change', event => {
