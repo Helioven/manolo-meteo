@@ -1,7 +1,7 @@
 'use strict';
 const LAT = 37.8795, LON = -4.7803, ZONE = 'Europe/Madrid';
 const API = 'https://api.open-meteo.com/v1/forecast';
-const CACHE_KEY = 'manolo-meteo-forecast-v1-6-1';
+const CACHE_KEY = 'manolo-meteo-forecast-v1-7';
 const el = id => document.getElementById(id);
 const state = { data: null, selected: 0, demo: false, demoWeather: 'clear', demoTime: 'day' };
 const localeDate = (date, options) => new Intl.DateTimeFormat('es-ES', { ...options, timeZone: ZONE }).format(new Date(`${date}T12:00:00+02:00`));
@@ -29,16 +29,47 @@ function weatherTheme(code) {
 function getCórdobaHour() {
   return Number(new Intl.DateTimeFormat('en-GB', { hour: '2-digit', hour12: false, timeZone: ZONE }).format(new Date()));
 }
-function timeTheme(hour) {
+function timeThemeFallback(hour) {
   if (hour < 6) return 'night';
   if (hour < 9) return 'morning';
   if (hour < 18) return 'day';
   if (hour < 21) return 'sunset';
   return 'night';
 }
+function minutesInZone(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-GB', { hour:'2-digit', minute:'2-digit', hour12:false, timeZone:ZONE }).formatToParts(date);
+  return Number(parts.find(p => p.type === 'hour').value) * 60 + Number(parts.find(p => p.type === 'minute').value);
+}
+function solarMinutes(value) {
+  if (typeof value !== 'string' || !/^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d/.test(value)) return null;
+  const hh = Number(value.slice(11,13)), mm = Number(value.slice(14,16));
+  return hh < 24 && mm < 60 ? hh * 60 + mm : null;
+}
+function solarTheme() {
+  const daily = state.data?.daily;
+  const today = new Intl.DateTimeFormat('en-CA', {year:'numeric',month:'2-digit',day:'2-digit',timeZone:ZONE}).format(new Date());
+  const index = daily?.time?.indexOf(today) ?? -1;
+  const sunrise = solarMinutes(daily?.sunrise?.[index]);
+  const sunset = solarMinutes(daily?.sunset?.[index]);
+  if (sunrise === null || sunset === null || sunset <= sunrise) return timeThemeFallback(getCórdobaHour());
+  const now = minutesInZone();
+  if (now < sunrise - 30 || now >= sunset + 30) return 'night';
+  if (now < sunrise + 30) return 'morning';
+  if (now < sunset - 30) return 'day';
+  return 'sunset';
+}
+function renderSolar(index) {
+  const d = state.data.daily;
+  const rise = d.sunrise?.[index], set = d.sunset?.[index];
+  const a = solarMinutes(rise), b = solarMinutes(set);
+  el('sunrise').textContent = a === null ? '—' : rise.slice(11,16);
+  el('sunset').textContent = b === null ? '—' : set.slice(11,16);
+  const duration = a !== null && b !== null && b > a ? b-a : null;
+  el('daylight').textContent = duration === null ? 'Horas de luz: —' : `Horas de luz: ${Math.floor(duration/60)} h ${String(duration%60).padStart(2,'0')} min`;
+}
 function applyTheme(code) {
   const body = document.body;
-  body.dataset.time = state.demo ? state.demoTime : timeTheme(getCórdobaHour());
+  body.dataset.time = state.demo ? state.demoTime : solarTheme();
   body.dataset.weather = state.demo ? state.demoWeather : weatherTheme(code);
   body.classList.toggle('demo-active', state.demo);
   el('hero-visual-note').textContent = state.demo ? 'VISTA SIMULADA · SOLO EFECTOS' : '';
@@ -214,6 +245,7 @@ function renderDetail() {
   const a = state.data, d = a.daily, i = state.selected, w = weather(d.weather_code[i]);
   const cur = a.current || {};
   const today = i === 0;
+  renderSolar(i);
   // La cabecera muestra observación actual SOLO en hoy; otros días, previsión de máxima.
   // Las condiciones visuales corresponden al día seleccionado, no siempre a hoy.
   const heroWeather = today ? weather(cur.weather_code ?? d.weather_code[0], !(cur.is_day ?? 1)) : w;
@@ -319,7 +351,7 @@ function initSnowLayer() {
 }
 
 function valid(data) {
-  return data && data.current && data.daily && Array.isArray(data.daily.time) && data.daily.time.length === 7 && data.hourly && Array.isArray(data.hourly.time);
+  return data && data.current && data.daily && Array.isArray(data.daily.time) && data.daily.time.length === 7 && Array.isArray(data.daily.sunrise) && Array.isArray(data.daily.sunset) && data.hourly && Array.isArray(data.hourly.time);
 }
 async function load() {
   el('refresh').disabled = true;
@@ -331,7 +363,7 @@ async function load() {
     timezone: ZONE,
     forecast_days: '7',
     current: 'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m',
-    daily: 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,uv_index_max',
+    daily: 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,uv_index_max,sunrise,sunset',
     hourly: 'temperature_2m,precipitation_probability,relative_humidity_2m,wind_speed_10m,weather_code,uv_index'
   });
   try {
