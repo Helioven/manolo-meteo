@@ -88,7 +88,7 @@ function weatherTheme(code) {
   if ([1, 2].includes(code)) return 'partly';
   return 'clear';
 }
-function getCórdobaHour() {
+function getLocalHour() {
   return Number(new Intl.DateTimeFormat('en-GB', { hour: '2-digit', hour12: false, timeZone: zone() }).format(new Date()));
 }
 function timeThemeFallback(hour) {
@@ -99,7 +99,7 @@ function timeThemeFallback(hour) {
   return 'night';
 }
 function minutesInZone(date = new Date()) {
-  const parts = new Intl.DateTimeFormat('en-GB', { hour:'2-digit', minute:'2-digit', hour12:false, timeZone:ZONE }).formatToParts(date);
+  const parts = new Intl.DateTimeFormat('en-GB', { hour:'2-digit', minute:'2-digit', hour12:false, timeZone:zone() }).formatToParts(date);
   return Number(parts.find(p => p.type === 'hour').value) * 60 + Number(parts.find(p => p.type === 'minute').value);
 }
 function solarMinutes(value) {
@@ -109,13 +109,13 @@ function solarMinutes(value) {
 }
 function solarTheme() {
   const daily = state.data?.daily;
-  const parts = new Intl.DateTimeFormat('en-GB', {year:'numeric',month:'2-digit',day:'2-digit',timeZone:ZONE}).formatToParts(new Date());
+  const parts = new Intl.DateTimeFormat('en-GB', {year:'numeric',month:'2-digit',day:'2-digit',timeZone:zone()}).formatToParts(new Date());
   const datePart = type => parts.find(p => p.type === type).value;
   const today = `${datePart('year')}-${datePart('month')}-${datePart('day')}`;
   const index = daily?.time?.indexOf(today) ?? -1;
   const sunrise = solarMinutes(daily?.sunrise?.[index]);
   const sunset = solarMinutes(daily?.sunset?.[index]);
-  if (sunrise === null || sunset === null || sunset <= sunrise) return timeThemeFallback(getCórdobaHour());
+  if (sunrise === null || sunset === null || sunset <= sunrise) return timeThemeFallback(getLocalHour());
   const now = minutesInZone();
   if (now < sunrise - 30 || now >= sunset + 30) return 'night';
   if (now < sunrise + 30) return 'morning';
@@ -223,12 +223,12 @@ function chooseAdvice(index) {
       'La nube viene con ganas. Hoy el look oficial es paraguas en mano. ☔'
     ],
     mixed: [
-      'Puede haber sorpresas. No parece un diluvio, pero Córdoba también sabe trolear de vez en cuando. 🌦️',
+      'Puede haber sorpresas. No parece un diluvio, pero el tiempo también sabe trolear de vez en cuando. 🌦️',
       'No es drama meteorológico, pero sí día de “por si acaso”. 🌦️',
       'El cielo está en modo indeciso. Mejor ir con un plan B ligero. 🌦️'
     ],
     hot: [
-      'El verano no quiere recoger las maletas. 😂 Córdoba le ha dado una semana extra.',
+      'El verano no quiere recoger las maletas. 😂 El calor se ha tomado una semana extra.',
       'Treinta y pico en octubre: el otoño ha pedido una excedencia. 😅',
       'El calendario dice otoño; el termómetro se está riendo. ☀️😂'
     ],
@@ -419,7 +419,6 @@ function valid(data) {
 }
 async function load() {
   const requestId = ++state.requestId;
-  const requestedCity = state.city;
   el('refresh').disabled = true;
   el('status').className = 'status';
   el('status').textContent = 'Actualizando previsión…';
