@@ -3,6 +3,8 @@ const API = 'https://api.open-meteo.com/v1/forecast';
 const GEOCODING_API = 'https://geocoding-api.open-meteo.com/v1/search';
 const FAVORITE_KEY = 'manolo-meteo-favorite-v1';
 const VIEW_KEY = 'manolo-meteo-viewed-v1';
+const FAVORITES_KEY = 'manolo-meteo-favorites-v2';
+const MAX_FAVORITES = 5;
 const DEFAULT_CITY = Object.freeze({id:0,name:'Córdoba',admin1:'Andalucía',country:'España',country_code:'ES',latitude:37.8795,longitude:-4.7803,timezone:'Europe/Madrid'});
 const el = id => document.getElementById(id);
 function validCity(c) { return c && typeof c.name === 'string' && c.name.length <= 100 && Number.isFinite(c.latitude) && Math.abs(c.latitude) <= 90 && Number.isFinite(c.longitude) && Math.abs(c.longitude) <= 180 && typeof c.timezone === 'string' && /^[A-Za-z_+\/-]+$/.test(c.timezone); }
@@ -10,37 +12,49 @@ function favoriteCity() {
   try { const c = JSON.parse(localStorage.getItem(FAVORITE_KEY) || 'null'); return validCity(c) ? c : DEFAULT_CITY; }
   catch (_) { return DEFAULT_CITY; }
 }
+function readFavorites() {
+ try {
+  const saved=JSON.parse(localStorage.getItem(FAVORITES_KEY)||'null');
+  if(Array.isArray(saved))return saved.filter(validCity).filter((c,i,all)=>all.findIndex(x=>Math.abs(c.latitude-x.latitude)<.001&&Math.abs(c.longitude-x.longitude)<.001)===i).slice(0,MAX_FAVORITES);
+ }catch(_){}
+ return [favoriteCity()];
+}
 function viewedCity() {
   try { const c = JSON.parse(localStorage.getItem(VIEW_KEY) || 'null'); return validCity(c) ? c : favoriteCity(); }
   catch (_) { return favoriteCity(); }
 }
-const state = { data: null, selected: 0, demo: false, demoWeather: 'clear', demoTime: 'day', city: viewedCity(), favorite: favoriteCity(), requestId:0, searchId:0 };
+const state = { data: null, selected: 0, demo: false, demoWeather: 'clear', demoTime: 'day', city: viewedCity(), favorites: readFavorites(), requestId:0, searchId:0 };
 function isSameCity(a,b) {
   return a && b && Number.isFinite(a.latitude) && Number.isFinite(b.latitude) &&
     Math.abs(a.latitude-b.latitude) < 0.001 && Math.abs(a.longitude-b.longitude) < 0.001;
 }
-function renderFavorite() {
-  const saved = state.favorite;
-  const currentIsFavorite = isSameCity(state.city,saved);
-  el('favorite-panel').classList.toggle('is-active', currentIsFavorite);
-  el('favorite-compact').hidden = !currentIsFavorite;
-  el('favorite-copy').hidden = currentIsFavorite;
-  el('favorite-city-name').textContent = cityLabel(saved);
-  el('favorite-open').hidden = currentIsFavorite;
-  el('favorite-save').hidden = currentIsFavorite;
-  el('favorite-actions').hidden = currentIsFavorite;
-  el('favorite-open').textContent = 'Ver pronóstico →';
-  el('favorite-save').textContent = '☆ Guardar esta ciudad';
-  el('location-favorite-label').textContent = currentIsFavorite ? '★ Favorita' : '📍 Consulta temporal';
-  el('location-reset').hidden = isSameCity(state.city, DEFAULT_CITY);
-  el('favorite-current-status').textContent = currentIsFavorite ? 'Estás viendo tu ciudad favorita.' : 'Puedes volver a ella con un toque.';
-  el('location-hint').hidden = currentIsFavorite;
-  el('location-hint').textContent = currentIsFavorite ? '' : 'Puedes consultar esta ciudad sin cambiar tu favorita, o pulsar ☆ para guardarla.';
+function isFavorite(city){return state.favorites.some(c=>isSameCity(c,city))}
+function saveFavorites(){try{localStorage.setItem(FAVORITES_KEY,JSON.stringify(state.favorites))}catch(_){}}
+function renderFavorite(){
+ const list=el('favorite-list');list.replaceChildren();
+ el('favorite-count').textContent=state.favorites.length+'/5';
+ el('favorite-add').hidden=isFavorite(state.city);
+ el('favorite-add').disabled=state.favorites.length>=MAX_FAVORITES;
+ el('favorite-add').textContent=state.favorites.length>=MAX_FAVORITES?'Máximo de 5 ciudades':'☆ Guardar ciudad actual';
+ el('favorite-empty').hidden=state.favorites.length!==0;
+ el('location-favorite-label').textContent=isFavorite(state.city)?'★ Favorita':'📍 Consulta temporal';
+ el('location-reset').hidden=isSameCity(state.city,DEFAULT_CITY);
+ el('location-hint').hidden=true;
+ for(const city of state.favorites){
+  const chip=document.createElement('div');chip.className='city-chip'+(isSameCity(city,state.city)?' active':'');
+  const open=document.createElement('button');open.type='button';open.className='city-chip-open';open.textContent=city.name;
+  open.title=cityLabel(city);open.setAttribute('aria-label','Consultar '+cityLabel(city));
+  open.setAttribute('aria-current',isSameCity(city,state.city)?'true':'false');
+  open.addEventListener('click',()=>{if(!isSameCity(city,state.city))setCity(city)});
+  const remove=document.createElement('button');remove.type='button';remove.className='city-chip-remove';remove.textContent='×';
+  remove.title='Quitar '+city.name;remove.setAttribute('aria-label','Quitar '+cityLabel(city)+' de favoritas');
+  remove.addEventListener('click',()=>{state.favorites=state.favorites.filter(c=>!isSameCity(c,city));saveFavorites();renderFavorite()});
+  chip.append(open,remove);list.appendChild(chip);
+ }
 }
-function saveCurrentFavorite() {
-  state.favorite = {...state.city};
-  try { localStorage.setItem(FAVORITE_KEY,JSON.stringify(state.favorite)); } catch (_) {}
-  renderFavorite();
+function saveCurrentFavorite(){
+ if(isFavorite(state.city)||state.favorites.length>=MAX_FAVORITES)return;
+ state.favorites.push({...state.city});saveFavorites();renderFavorite();
 }
 const zone = () => state.city.timezone;
 const localeDate = (date, options) => new Intl.DateTimeFormat('es-ES', { ...options, timeZone:'UTC' }).format(new Date(`${date}T12:00:00Z`));
@@ -508,14 +522,13 @@ async function load() {
 }
 
 el('location-form').addEventListener('submit', searchCities);
-el('favorite-open').addEventListener('click', () => { ++state.searchId; el('location-submit').disabled = false; setCity(state.favorite); });
-el('favorite-save').addEventListener('click', saveCurrentFavorite);
+el('favorite-add').addEventListener('click',saveCurrentFavorite);
 el('location-search').addEventListener('input', () => {
   ++state.searchId;
   el('location-submit').disabled = false;
   el('location-results').hidden = true;
   const typing = el('location-search').value.trim().length > 0;
-  el('location-hint').hidden = !typing && isSameCity(state.city,state.favorite);
+  el('location-hint').hidden = !typing;
   if (typing) el('location-hint').textContent = 'Pulsa Buscar para encontrar localidades.';
 });
 el('location-reset').addEventListener('click', () => { ++state.searchId; el('location-submit').disabled = false; setCity(DEFAULT_CITY); });
