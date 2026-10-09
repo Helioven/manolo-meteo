@@ -1,10 +1,72 @@
 'use strict';
-const LAT = 37.8795, LON = -4.7803, ZONE = 'Europe/Madrid';
 const API = 'https://api.open-meteo.com/v1/forecast';
-const CACHE_KEY = 'manolo-meteo-forecast-v1-7';
+const GEOCODING_API = 'https://geocoding-api.open-meteo.com/v1/search';
+const FAVORITE_KEY = 'manolo-meteo-favorite-v1';
+const DEFAULT_CITY = Object.freeze({id:0,name:'Córdoba',admin1:'Andalucía',country:'España',country_code:'ES',latitude:37.8795,longitude:-4.7803,timezone:'Europe/Madrid'});
 const el = id => document.getElementById(id);
-const state = { data: null, selected: 0, demo: false, demoWeather: 'clear', demoTime: 'day' };
-const localeDate = (date, options) => new Intl.DateTimeFormat('es-ES', { ...options, timeZone: ZONE }).format(new Date(`${date}T12:00:00+02:00`));
+function validCity(c) { return c && typeof c.name === 'string' && c.name.length <= 100 && Number.isFinite(c.latitude) && Math.abs(c.latitude) <= 90 && Number.isFinite(c.longitude) && Math.abs(c.longitude) <= 180 && typeof c.timezone === 'string' && /^[A-Za-z_+\/-]+$/.test(c.timezone); }
+function favoriteCity() {
+  try { const c = JSON.parse(localStorage.getItem(FAVORITE_KEY) || 'null'); return validCity(c) ? c : DEFAULT_CITY; }
+  catch (_) { return DEFAULT_CITY; }
+}
+const state = { data: null, selected: 0, demo: false, demoWeather: 'clear', demoTime: 'day', city: favoriteCity(), requestId:0, searchId:0 };
+const zone = () => state.city.timezone;
+const localeDate = (date, options) => new Intl.DateTimeFormat('es-ES', { ...options, timeZone:'UTC' }).format(new Date(`${date}T12:00:00Z`));
+const cacheKey = () => `manolo-meteo-forecast-v1-7-${state.city.latitude.toFixed(4)}-${state.city.longitude.toFixed(4)}`;
+function cityLabel(city) { return [city.name,city.admin1,city.country].filter(Boolean).filter((item,i,a) => a.indexOf(item)===i).join(', '); }
+function updateCityUI() {
+  const c = state.city;
+  el('current-location-name').textContent = cityLabel(c);
+  el('brand-location').textContent = c.name.toUpperCase();
+  el('hero-location').textContent = `${c.name.toUpperCase()} · ${(c.country || '').toUpperCase()}`;
+  el('official-links').hidden = c.country_code !== 'ES';
+  document.body.classList.toggle('outside-cordoba', !(Math.abs(c.latitude-DEFAULT_CITY.latitude)<.03 && Math.abs(c.longitude-DEFAULT_CITY.longitude)<.03));
+  document.title = `Manolo Meteo · ${c.name}`;
+}
+function setCity(city) {
+  if (!validCity(city)) return;
+  state.city = {id:city.id ?? null,name:city.name,admin1:city.admin1 || '',country:city.country || '',country_code:city.country_code || '',latitude:city.latitude,longitude:city.longitude,timezone:city.timezone};
+  try { localStorage.setItem(FAVORITE_KEY, JSON.stringify(state.city)); } catch (_) {}
+  el('location-search').value = '';
+  el('location-results').replaceChildren();
+  el('location-results').hidden = true;
+  el('location-hint').textContent = '★ Localidad guardada en este dispositivo.';
+  updateCityUI();
+  load();
+}
+async function searchCities(event) {
+  event.preventDefault();
+  const query = el('location-search').value.trim();
+  const results = el('location-results');
+  if (query.length < 2) { el('location-hint').textContent = 'Escribe al menos dos letras.'; return; }
+  const id = ++state.searchId;
+  el('location-submit').disabled = true;
+  el('location-hint').textContent = 'Buscando localidades…';
+  results.hidden = true; results.replaceChildren();
+  try {
+    const params = new URLSearchParams({name:query,count:'8',language:'es',format:'json'});
+    const res = await fetch(`${GEOCODING_API}?${params}`,{cache:'no-store'});
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const body = await res.json();
+    if (id !== state.searchId) return;
+    const cities = (body.results || []).filter(validCity);
+    if (!cities.length) { el('location-hint').textContent = 'No hay coincidencias. Prueba con otro nombre.'; return; }
+    for (const city of cities) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = '📍 ' + cityLabel(city);
+      button.addEventListener('click', () => { ++state.searchId; setCity(city); });
+      results.appendChild(button);
+    }
+    results.hidden = false;
+    el('location-hint').textContent = 'Elige un resultado para cargar el tiempo y guardar tu localidad.';
+  } catch (err) {
+    if (id === state.searchId) el('location-hint').textContent = 'No se pudo buscar. Comprueba la conexión e inténtalo otra vez.';
+  } finally {
+    if (id === state.searchId) el('location-submit').disabled = false;
+  }
+}
+
 
 function weather(code, night = false) {
   if (code === 0) return { icon: night ? '☾' : '☀', label: 'Despejado' };
@@ -27,7 +89,7 @@ function weatherTheme(code) {
   return 'clear';
 }
 function getCórdobaHour() {
-  return Number(new Intl.DateTimeFormat('en-GB', { hour: '2-digit', hour12: false, timeZone: ZONE }).format(new Date()));
+  return Number(new Intl.DateTimeFormat('en-GB', { hour: '2-digit', hour12: false, timeZone: zone() }).format(new Date()));
 }
 function timeThemeFallback(hour) {
   if (hour < 6) return 'night';
@@ -356,13 +418,15 @@ function valid(data) {
   return data && data.current && data.daily && Array.isArray(data.daily.time) && data.daily.time.length === 7 && Array.isArray(data.daily.sunrise) && Array.isArray(data.daily.sunset) && data.hourly && Array.isArray(data.hourly.time);
 }
 async function load() {
+  const requestId = ++state.requestId;
+  const requestedCity = state.city;
   el('refresh').disabled = true;
   el('status').className = 'status';
   el('status').textContent = 'Actualizando previsión…';
   const params = new URLSearchParams({
-    latitude: LAT,
-    longitude: LON,
-    timezone: ZONE,
+    latitude: state.city.latitude,
+    longitude: state.city.longitude,
+    timezone: state.city.timezone,
     forecast_days: '7',
     current: 'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m',
     daily: 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,uv_index_max,sunrise,sunset',
@@ -373,25 +437,31 @@ async function load() {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     if (!valid(data)) throw new Error('Datos incompletos');
+    if (requestId !== state.requestId) return;
     state.data = data; state.selected = 0;
-    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data })); } catch (_) {}
+    try { localStorage.setItem(cacheKey(), JSON.stringify({ at: Date.now(), data })); } catch (_) {}
     render();
-    el('status').textContent = `✓ Previsión actualizada · ${new Intl.DateTimeFormat('es-ES', { timeZone: ZONE, hour: '2-digit', minute: '2-digit' }).format(new Date())} h · Fuente: Open-Meteo`;
+    el('status').textContent = `✓ Previsión actualizada · ${new Intl.DateTimeFormat('es-ES', { timeZone: zone(), hour: '2-digit', minute: '2-digit' }).format(new Date())} h · Fuente: Open-Meteo`;
   } catch (err) {
+    if (requestId !== state.requestId) return;
     let saved = null;
-    try { saved = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); } catch (_) {}
+    try { saved = JSON.parse(localStorage.getItem(cacheKey()) || 'null'); } catch (_) {}
     if (saved && valid(saved.data)) {
       state.data = saved.data; state.selected = 0; render();
-      const when = new Intl.DateTimeFormat('es-ES', { timeZone: ZONE, dateStyle: 'short', timeStyle: 'short' }).format(new Date(saved.at));
+      const when = new Intl.DateTimeFormat('es-ES', { timeZone: zone(), dateStyle: 'short', timeStyle: 'short' }).format(new Date(saved.at));
       el('status').className = 'status error';
       el('status').textContent = `Sin conexión. Mostrando última previsión guardada (${when}). Los datos pueden estar desactualizados.`;
     } else {
       el('status').className = 'status error';
       el('status').textContent = 'No ha sido posible consultar el tiempo. Comprueba la conexión y pulsa ↻ para reintentar. No se muestran datos inventados.';
     }
-  } finally { el('refresh').disabled = false; }
+  } finally { if (requestId === state.requestId) el('refresh').disabled = false; }
 }
 
+el('location-form').addEventListener('submit', searchCities);
+el('location-search').addEventListener('input', () => { ++state.searchId; el('location-submit').disabled = false; el('location-results').hidden = true; });
+el('location-reset').addEventListener('click', () => { ++state.searchId; el('location-submit').disabled = false; setCity(DEFAULT_CITY); });
+updateCityUI();
 el('demo-enabled').addEventListener('change', event => {
   state.demo = event.target.checked;
   el('demo-controls').hidden = !state.demo;
