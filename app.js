@@ -60,6 +60,13 @@ const zone = () => state.city.timezone;
 const localeDate = (date, options) => new Intl.DateTimeFormat('es-ES', { ...options, timeZone:'UTC' }).format(new Date(`${date}T12:00:00Z`));
 const cacheKey = () => `manolo-meteo-forecast-v1-7-${state.city.latitude.toFixed(4)}-${state.city.longitude.toFixed(4)}`;
 function cityLabel(city) { return [city.name,city.admin1,city.country].filter(Boolean).filter((item,i,a) => a.indexOf(item)===i).join(', '); }
+function setSearchExpanded(expanded, focus = false) {
+ const panel=el('location-expanded'),toggle=el('location-toggle');
+ panel.hidden=!expanded;
+ toggle.setAttribute('aria-expanded',String(expanded));
+ toggle.lastElementChild.textContent=expanded?'⌃':'⌄';
+ if(expanded && focus) el('location-search').focus();
+}
 function updateCityUI() {
   const c = state.city;
   el('current-location-name').textContent = cityLabel(c);
@@ -78,6 +85,7 @@ function setCity(city) {
   el('location-search').value = '';
   el('location-results').replaceChildren();
   el('location-results').hidden = true;
+  setSearchExpanded(false);
   updateCityUI();
   state.data = null;
   el('current-icon').textContent = '◌';
@@ -521,6 +529,17 @@ async function load() {
   } finally { if (requestId === state.requestId) el('refresh').disabled = false; }
 }
 
+el('location-toggle').addEventListener('click', () => {
+ const expanded=el('location-toggle').getAttribute('aria-expanded')==='true';
+ if(expanded){
+  ++state.searchId;
+  el('location-submit').disabled=false;
+  el('location-results').hidden=true;
+  el('location-search').value='';
+  el('location-hint').hidden=true;
+ }
+ setSearchExpanded(!expanded,!expanded);
+});
 el('location-form').addEventListener('submit', searchCities);
 el('favorite-add').addEventListener('click',saveCurrentFavorite);
 el('location-search').addEventListener('input', () => {
