@@ -1,6 +1,6 @@
-const CACHE = 'manolo-meteo-shell-v1-7-5';
+const CACHE = 'manolo-meteo-shell-v1-7-6';
 const PREFIX = 'manolo-meteo-shell-';
-const FILES = ['./','./index.html','./style.css?v=1.7.5','./app.js?v=1.7.5','./manifest.webmanifest','./icon.svg','./cordoba-skyline.svg','./cloud-soft.svg','./sun-disc.svg','./icon-192.png','./icon-512.png'];
+const FILES = ['./','./index.html','./style.css?v=1.7.6','./app.js?v=1.7.6','./manifest.webmanifest','./icon.svg','./cordoba-skyline.svg','./cloud-soft.svg','./sun-disc.svg','./icon-192.png','./icon-512.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)));
   self.skipWaiting();

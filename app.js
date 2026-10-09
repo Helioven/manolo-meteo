@@ -46,6 +46,7 @@ function updateCityUI() {
   el('brand-location').textContent = c.name.toUpperCase();
   el('hero-location').textContent = `${c.name.toUpperCase()} · ${(c.country || '').toUpperCase()}`;
   el('official-links').hidden = c.id !== DEFAULT_CITY.id || c.country_code !== 'ES';
+  el('location-reset').hidden = isSameCity(c, DEFAULT_CITY);
   document.body.classList.toggle('outside-cordoba', !(Math.abs(c.latitude-DEFAULT_CITY.latitude)<.03 && Math.abs(c.longitude-DEFAULT_CITY.longitude)<.03));
   document.title = `Manolo Meteo · ${c.name}`;
   renderFavorite();
