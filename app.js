@@ -350,7 +350,7 @@ function chart(points) {
   if (!points.length) return 'Sin datos horarios disponibles para esta fecha.';
   const samples = points.filter(p => p.hour % 3 === 2 || p.hour % 3 === 0);
   const values = samples.length ? samples : points;
-  const W = 600, H = 172, L = 30, R = 16, T = 15, B = 32;
+  const W = 600, H = 136, L = 30, R = 16, T = 13, B = 26;
   let mn = Math.min(...values.map(x => x.temp)) - 2, mx = Math.max(...values.map(x => x.temp)) + 2;
   if (mx <= mn) mx = mn + 1;
   const x = i => L + i * (W - L - R) / Math.max(values.length - 1, 1), y = v => T + (mx - v) * (H - T - B) / (mx - mn);
@@ -506,7 +506,7 @@ function renderDetail() {
     el('hour-list').appendChild(node);
   });
   const noon = at14;
-  el('day-extras').innerHTML = `<div class="extra"><small>💧 Humedad (14 h)</small><b>${noon ? rounded(noon.humidity, '%') : '—'}</b></div><div class="extra"><small>🌬 Viento máx.</small><b>${rounded(d.wind_speed_10m_max[i], ' km/h')}</b></div><div class="extra"><small>☀ UV máx.</small><b>${rounded(d.uv_index_max[i], '')}</b></div>`;
+  el('day-extras').innerHTML = `<div class="extra"><small title="Humedad prevista a las 14:00">💧 Humedad</small><b>${noon ? rounded(noon.humidity, '%') : '—'}</b></div><div class="extra"><small>🌬 Viento máx.</small><b>${rounded(d.wind_speed_10m_max[i], ' km/h')}</b></div><div class="extra"><small>☀ UV máx.</small><b>${rounded(d.uv_index_max[i], '')}</b></div>`;
   const advice = chooseAdvice(i);
   el('advice-text').textContent = advice.text;
   el('advice-practical').textContent = advice.practical;
