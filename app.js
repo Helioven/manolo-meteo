@@ -41,13 +41,15 @@ function minutesInZone(date = new Date()) {
   return Number(parts.find(p => p.type === 'hour').value) * 60 + Number(parts.find(p => p.type === 'minute').value);
 }
 function solarMinutes(value) {
-  if (typeof value !== 'string' || !/^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d/.test(value)) return null;
+  if (typeof value !== 'string' || !/^\d{4}-\d\d-\d\dT\d\d:\d\d/.test(value)) return null;
   const hh = Number(value.slice(11,13)), mm = Number(value.slice(14,16));
   return hh < 24 && mm < 60 ? hh * 60 + mm : null;
 }
 function solarTheme() {
   const daily = state.data?.daily;
-  const today = new Intl.DateTimeFormat('en-CA', {year:'numeric',month:'2-digit',day:'2-digit',timeZone:ZONE}).format(new Date());
+  const parts = new Intl.DateTimeFormat('en-GB', {year:'numeric',month:'2-digit',day:'2-digit',timeZone:ZONE}).formatToParts(new Date());
+  const datePart = type => parts.find(p => p.type === type).value;
+  const today = `${datePart('year')}-${datePart('month')}-${datePart('day')}`;
   const index = daily?.time?.indexOf(today) ?? -1;
   const sunrise = solarMinutes(daily?.sunrise?.[index]);
   const sunset = solarMinutes(daily?.sunset?.[index]);
