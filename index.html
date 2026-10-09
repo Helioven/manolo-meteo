@@ -7,7 +7,7 @@
   <meta name="description" content="Manolo Meteo: previsión de siete días en tus localidades favoritas, ciclo solar y consejos con arte." />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="style.css?v=1.7.8" />
+  <link rel="stylesheet" href="style.css?v=1.7.9" />
   <title>Manolo Meteo · Tu localidad</title>
 </head>
 <body data-time="night" data-weather="clear">
@@ -30,12 +30,17 @@
         <input id="location-search" type="search" minlength="2" maxlength="80" placeholder="Buscar ciudad, por ejemplo Cracovia…" aria-describedby="location-hint" required />
         <button type="submit" id="location-submit">Buscar</button>
       </form>
-      <div id="location-hint" class="location-hint" aria-live="polite">Busca una ciudad para consultar el tiempo. Tu favorita se mantiene guardada.</div>
+      <div id="location-hint" class="location-hint" aria-live="polite" hidden>Busca una ciudad para consultar el tiempo. Tu favorita se mantiene guardada.</div>
       <div id="location-results" class="location-results" role="group" aria-label="Resultados de búsqueda" hidden></div>
       <button type="button" id="location-reset" class="location-reset">↩ Consultar Córdoba</button>
     </section>
-    <section class="favorite-panel" aria-label="Mi ciudad favorita">
-      <div class="favorite-copy">
+    <section id="favorite-panel" class="favorite-panel" aria-label="Mi ciudad favorita">
+      <div id="favorite-compact" class="favorite-compact" hidden aria-label="Tu ciudad favorita está activa">
+        <span class="favorite-compact-star" aria-hidden="true">★</span>
+        <span>Tu favorita está activa</span>
+        <span class="favorite-compact-tick" aria-hidden="true">✓</span>
+      </div>
+      <div id="favorite-copy" class="favorite-copy">
         <span class="favorite-eyebrow">★ MI CIUDAD FAVORITA</span>
         <strong id="favorite-city-name">Córdoba, Andalucía, España</strong>
         <small id="favorite-current-status">Acceso rápido a tu ciudad guardada.</small>
@@ -153,11 +158,11 @@
     </section>
 
     <footer>
-      <span>Hecho con ☕ y un poco de cachondeo. · <strong>v1.7.8</strong></span>
+      <span>Hecho con ☕ y un poco de cachondeo. · <strong>v1.7.9</strong></span>
       <span>Datos: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Hora local de la localidad</span>
       <small>Las previsiones son estimaciones. Para alertas oficiales en España, consulta AEMET o el servicio meteorológico de tu país. La app no envía avisos automáticos.</small>
     </footer>
   </main>
-  <script src="app.js?v=1.7.8" defer></script>
+  <script src="app.js?v=1.7.9" defer></script>
 </body>
 </html>
