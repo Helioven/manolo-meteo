@@ -557,3 +557,8 @@ body[data-time="night"] .hero .celestial{-webkit-mask-image:radial-gradient(circ
  .next-hours-heading h2{font-size:19px}
  .next-hours-advice{font-size:12px}
 }
+
+/* 1.9.1: detalles compactos */
+.chart{min-height:116px;padding:6px;overflow:hidden}
+.chart svg{display:block;width:100%;height:auto}
+.extras .extra small{line-height:1.35}
