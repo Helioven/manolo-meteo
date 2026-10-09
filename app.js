@@ -88,6 +88,7 @@ function setCity(city) {
   setSearchExpanded(false);
   updateCityUI();
   state.data = null;
+  renderNextHours();
   el('current-icon').textContent = '◌';
   el('current-high').textContent = '--°';
   el('current-low').textContent = '--°';
@@ -359,6 +360,86 @@ function chart(points) {
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Gráfico de temperatura horaria"><defs><linearGradient id="warm" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffc269"/><stop offset="1" stop-color="#ff7d66"/></linearGradient></defs><line x1="${L}" x2="${W - R}" y1="${H - B}" y2="${H - B}" stroke="#35577a"/><line x1="${L}" x2="${W - R}" y1="${T + 20}" y2="${T + 20}" stroke="#35577a" stroke-dasharray="4 5"/><path d="${path}" fill="none" stroke="url(#warm)" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5"/>${line}${ticks}<text x="${L}" y="13" font-size="12" fill="#e6bd8c">${rounded(Math.max(...values.map(v => v.temp)))}</text></svg>`;
 }
 
+
+/* Previsión independiente de 6 horas: siempre usa el reloj local de la ciudad,
+   no el día elegido en el pronóstico de 7 días. */
+function localHourStamp(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit',
+    hourCycle:'h23', timeZone:zone()
+  }).formatToParts(date);
+  const value = key => parts.find(part => part.type === key)?.value || '';
+  return `${value('year')}-${value('month')}-${value('day')}T${value('hour')}:${value('minute')}`;
+}
+function nextSixHours(data, now = new Date()) {
+  const h = data?.hourly;
+  if (!h?.time?.length) return [];
+  // Exclusión de la hora actual, que ya ha empezado; cubrimos las 6 horas completas siguientes.
+  const start = localHourStamp(now).slice(0,13);
+  const rows = [];
+  for (let i = 0; i < h.time.length; i++) {
+    if (h.time[i].slice(0,13) <= start) continue;
+    const temp = h.temperature_2m?.[i], rain = h.precipitation_probability?.[i], code = h.weather_code?.[i];
+    if (!Number.isFinite(temp) || !Number.isFinite(rain) || !Number.isFinite(code)) continue;
+    rows.push({ time:h.time[i], temp, rain, code });
+    if (rows.length === 6) break;
+  }
+  return rows;
+}
+function hourlyAdvice(rows) {
+  if (!rows.length) return {kind:'neutral',text:'No hay datos suficientes para las próximas horas.'};
+  const maxRain = Math.max(...rows.map(r => r.rain));
+  const firstWet = rows.find(r => r.rain >= 40);
+  if (maxRain >= 70) return {kind:'wet',text:`☂ Probabilidad de lluvia alta (hasta ${Math.round(maxRain)}%). Mejor tener paraguas a mano.`};
+  if (firstWet) return {kind:'mixed',text:`🌦 Posibles chubascos desde las ${firstWet.time.slice(11,16)} (hasta ${Math.round(maxRain)}% de probabilidad).`};
+  if (maxRain >= 20) return {kind:'mixed',text:`🌤 Puede caer alguna gota: probabilidad máxima del ${Math.round(maxRain)}%.`};
+  return {kind:'dry',text:`☕ Pocas probabilidades de lluvia en las próximas seis horas (máximo ${Math.round(maxRain)}%). Terraza candidata.`};
+}
+function renderNextHours() {
+  const list = el('next-hours-list'), advice = el('next-hours-advice');
+  list.replaceChildren();
+  if (!state.data) {
+    advice.className = 'next-hours-advice';
+    advice.textContent = 'Consultando las próximas horas…';
+    el('next-hours-caption').textContent = 'Hora local · Open-Meteo';
+    return;
+  }
+  const rows = nextSixHours(state.data);
+  el('next-hours-caption').textContent = `Hora local de ${state.city.name} · Open-Meteo`;
+  if (!rows.length) {
+    advice.className = 'next-hours-advice';
+    advice.textContent = 'No hay datos horarios disponibles. Actualiza la previsión para reintentar.';
+    return;
+  }
+  for (const row of rows) {
+    const day = row.time.slice(0,10);
+    const sunrise = state.data.daily?.sunrise?.[state.data.daily.time.indexOf(day)];
+    const sunset = state.data.daily?.sunset?.[state.data.daily.time.indexOf(day)];
+    const night = !!(sunrise && sunset && (row.time < sunrise || row.time >= sunset));
+    const node = document.createElement('div');
+    node.className = 'next-hour-card';
+    node.setAttribute('aria-label',`${row.time.slice(11,16)}, ${weather(row.code,night).label}, ${rounded(row.temp)}, ${rounded(row.rain,'%')} probabilidad de lluvia`);
+    const hour = document.createElement('span');
+    hour.className = 'next-hour-time';
+    hour.textContent = row.time.slice(11,16);
+    const icon = document.createElement('span');
+    icon.className = 'next-hour-icon';
+    icon.textContent = weather(row.code,night).icon;
+    icon.setAttribute('aria-hidden','true');
+    const temp = document.createElement('strong');
+    temp.className = 'next-hour-temp';
+    temp.textContent = rounded(row.temp);
+    const rain = document.createElement('span');
+    rain.className = 'next-hour-rain';
+    rain.textContent = '☂ ' + rounded(row.rain,'%');
+    node.append(hour,icon,temp,rain);
+    list.appendChild(node);
+  }
+  const result = hourlyAdvice(rows);
+  advice.className = 'next-hours-advice next-hours-advice--' + result.kind;
+  advice.textContent = result.text;
+}
+
 function render() {
   const a = state.data; if (!a) return;
   const d = a.daily; const cur = a.current || {};
@@ -375,6 +456,7 @@ function render() {
     el('day-list').appendChild(button);
   });
   renderDetail();
+  renderNextHours();
 }
 
 function renderDetail() {
@@ -525,6 +607,7 @@ async function load() {
     } else {
       el('status').className = 'status error';
       el('status').textContent = 'No ha sido posible consultar el tiempo. Comprueba la conexión y pulsa ↻ para reintentar. No se muestran datos inventados.';
+      renderNextHours();
     }
   } finally { if (requestId === state.requestId) el('refresh').disabled = false; }
 }
@@ -565,7 +648,10 @@ el('demo-time').addEventListener('change', event => {
   state.demoTime = event.target.value;
   refreshVisualTheme();
 });
-setInterval(() => { if (!state.demo) refreshVisualTheme(); }, 60000);
+setInterval(() => {
+  if (!state.demo) refreshVisualTheme();
+  if (state.data) renderNextHours();
+}, 60000);
 el('refresh').addEventListener('click', load);
 initRainLayer();
 initSnowLayer();
