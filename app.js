@@ -19,7 +19,7 @@ function updateCityUI() {
   el('current-location-name').textContent = cityLabel(c);
   el('brand-location').textContent = c.name.toUpperCase();
   el('hero-location').textContent = `${c.name.toUpperCase()} · ${(c.country || '').toUpperCase()}`;
-  el('official-links').hidden = c.country_code !== 'ES';
+  el('official-links').hidden = c.id !== DEFAULT_CITY.id || c.country_code !== 'ES';
   document.body.classList.toggle('outside-cordoba', !(Math.abs(c.latitude-DEFAULT_CITY.latitude)<.03 && Math.abs(c.longitude-DEFAULT_CITY.longitude)<.03));
   document.title = `Manolo Meteo · ${c.name}`;
 }
@@ -32,6 +32,12 @@ function setCity(city) {
   el('location-results').hidden = true;
   el('location-hint').textContent = '★ Localidad guardada en este dispositivo.';
   updateCityUI();
+  state.data = null;
+  el('current-temp').textContent = '--';
+  el('current-desc').textContent = 'Consultando la nueva localidad…';
+  el('day-list').textContent = 'Cargando previsión…';
+  el('day-chart').textContent = 'Cargando…';
+  el('hour-list').textContent = 'Cargando…';
   load();
 }
 async function searchCities(event) {
