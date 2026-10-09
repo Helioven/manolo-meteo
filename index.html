@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#08162b" />
-  <meta name="description" content="Manolo Meteo: el tiempo en Córdoba, siete días interactivos y un consejo con arte." />
+  <meta name="description" content="Manolo Meteo: previsión de siete días en tus localidades favoritas, ciclo solar y consejos con arte." />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="style.css?v=1.7.4" />
+  <link rel="stylesheet" href="style.css?v=1.7.5" />
   <title>Manolo Meteo · Tu localidad</title>
 </head>
 <body data-time="night" data-weather="clear">
@@ -24,15 +24,26 @@
     </header>
 
     <section class="location-panel" aria-label="Elegir localidad">
-      <div class="location-heading"><span>📍 <strong id="current-location-name">Córdoba, España</strong></span><small id="location-favorite-label">★ Localidad guardada</small></div>
+      <div class="location-heading"><span>📍 <strong id="current-location-name">Córdoba, España</strong></span><small id="location-favorite-label">★ Favorita</small></div>
       <form id="location-form" class="location-form" autocomplete="off">
         <label class="visually-hidden" for="location-search">Buscar localidad</label>
         <input id="location-search" type="search" minlength="2" maxlength="80" placeholder="Buscar ciudad, por ejemplo Cracovia…" aria-describedby="location-hint" required />
         <button type="submit" id="location-submit">Buscar</button>
       </form>
-      <div id="location-hint" class="location-hint" aria-live="polite">Busca y elige una localidad. La elegida se guardará como favorita en este dispositivo.</div>
+      <div id="location-hint" class="location-hint" aria-live="polite">Busca una ciudad para consultar el tiempo. Tu favorita se mantiene guardada.</div>
       <div id="location-results" class="location-results" role="group" aria-label="Resultados de búsqueda" hidden></div>
-      <button type="button" id="location-reset" class="location-reset">↩ Volver a Córdoba</button>
+      <button type="button" id="location-reset" class="location-reset">↩ Consultar Córdoba</button>
+    </section>
+    <section class="favorite-panel" aria-label="Mi ciudad favorita">
+      <div class="favorite-copy">
+        <span class="favorite-eyebrow">★ MI CIUDAD FAVORITA</span>
+        <strong id="favorite-city-name">Córdoba, Andalucía, España</strong>
+        <small id="favorite-current-status">Acceso rápido a tu ciudad guardada.</small>
+      </div>
+      <div class="favorite-actions">
+        <button type="button" id="favorite-open" class="favorite-primary">Ver pronóstico →</button>
+        <button type="button" id="favorite-save" class="favorite-secondary">☆ Guardar esta ciudad</button>
+      </div>
     </section>
 
     <section class="hero" aria-label="El tiempo ahora">
@@ -142,11 +153,11 @@
     </section>
 
     <footer>
-      <span>Hecho con ☕ y un poco de cachondeo. · <strong>v1.7.4</strong></span>
+      <span>Hecho con ☕ y un poco de cachondeo. · <strong>v1.7.5</strong></span>
       <span>Datos: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Hora local de la localidad</span>
       <small>Las previsiones son estimaciones. Para alertas oficiales en España, consulta AEMET o el servicio meteorológico de tu país. La app no envía avisos automáticos.</small>
     </footer>
   </main>
-  <script src="app.js?v=1.7.4" defer></script>
+  <script src="app.js?v=1.7.5" defer></script>
 </body>
 </html>
