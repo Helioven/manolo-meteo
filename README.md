@@ -2,7 +2,7 @@
 
 Aplicación meteorológica con interfaz móvil/PWA, previsiones y recomendaciones prácticas con humor («El consejo de Manolo»).
 
-> **Documento de contexto y trabajo — actualizado el 20/10/2026.** La información sobre pantallas procede de capturas facilitadas por el usuario; **no se ha auditado el código ni la exactitud de los datos meteorológicos**. Distinguir siempre entre comportamiento observado, incidencias por investigar y mejoras propuestas. Este README no constituye autorización para implementar cambios.
+> **Documento de contexto y trabajo — actualizado el 07/11/2026.** La información sobre pantallas procede de capturas facilitadas por el usuario; **no se ha auditado el código ni la exactitud de los datos meteorológicos**. Distinguir siempre entre comportamiento observado, incidencias por investigar y mejoras propuestas. Este README no constituye autorización para implementar cambios.
 
 ## Contexto observado en capturas (versión mostrada: v1.9.1)
 
@@ -69,6 +69,30 @@ Aplicación meteorológica con interfaz móvil/PWA, previsiones y recomendacione
 
 **Experimento propuesto:** comparar pronósticos de las mismas localidades, horas y variables durante un periodo definido, contrastándolos posteriormente con observaciones cuando sea viable. Registrar errores y discrepancias, no impresiones aisladas.
 
+### MET-05 — Manolo meteorológico: avatar dinámico junto a «El consejo de Manolo» (idea aprobada para estudiar)
+
+**Origen:** propuesta de Helio del 7/11/2026. **Estado:** concepto para futura renovación visual; **no implementado**, sin diseños finales ni autorización para modificar la app.
+
+**Objetivo:** que «El consejo de Manolo» deje de ser solamente un texto y muestre un **avatar/mini icono de Manolo que cambie según el clima de la localidad seleccionada**. El personaje y el consejo deben comunicar la misma situación meteorológica, con un tono útil, cercano, original y distendido. Este cambio formaría parte de un rediseño más profesional de Manolo Meteo, menos parecido a una plantilla genérica, sin sacrificar legibilidad ni rendimiento.
+
+**Identidad obligatoria de la mascota:** usar la versión oficial de **ManoloLabs by Helio**: robot 3D blanco/metálico, **dos antenas**, gafas oscuras cuadradas, bigote marrón, detalles luminosos azules y **M azul luminosa en el pecho**. Mantener proporciones y rasgos de las referencias oficiales; no reutilizar el Manolo antiguo ni inventar un personaje diferente. Los complementos y expresiones pueden variar con el tiempo sin ocultar sus rasgos identificativos.
+
+**Estados iniciales candidatos** (ejemplos, no diseños aprobados): sol, intervalos nubosos, nublado, lluvia, tormenta, viento, nieve/frío, calor intenso y noche despejada. Se pueden usar accesorios discretos (paraguas, bufanda, etc.) y expresiones acordes. Evitar que el avatar contradiga el pronóstico o convierta alertas meteorológicas en chistes que minimicen el riesgo.
+
+**Comportamiento propuesto:**
+- Leer los datos meteorológicos **ya disponibles** en la aplicación; mapearlos a un conjunto limitado de estados visuales, sin exigir otra API solo para el icono.
+- Definir **prioridades deterministas** si se solapan estados: p. ej., tormenta/precipitación y avisos relevantes antes que condición genérica de día o noche; calor/frío/viento solo cuando existan umbrales definidos y sustentados por datos.
+- Emparejar cada avatar con un consejo contextual **coherente y explicable**, indicando el periodo temporal al que se refiere. Conservar separadas la frase humorística, la recomendación práctica y la información meteorológica verificable.
+- Si hay datos incompletos o conflicto, mostrar el **Manolo neutro** y una recomendación prudente; no afirmar lluvia, sol ni temperatura sin respaldo.
+- Usar imágenes optimizadas y accesibles (texto alternativo o decoración correctamente marcada, según contexto), con tamaño estable, sin saltos visuales y sin animaciones obligatorias. Preferir variantes visuales aprobadas frente a generación de imágenes en tiempo real.
+
+**Despliegue por fases sugerido:**
+1. Diseñar y **aprobar visualmente** una colección pequeña de avatares consistentes con el Manolo oficial.
+2. Implementar el mapeo y la variante de avatar en la tarjeta actual de consejos, con fallback neutro.
+3. Ampliar estados y pulir transiciones, solo si aportan valor y no perjudican rendimiento o accesibilidad.
+
+**QA / aceptación futura:** comprobar localidad, día/noche, cambios de hora y zona horaria, transiciones entre condiciones, múltiples factores simultáneos, datos ausentes, caché, coherencia icono–consejo–previsión, lectura en móvil y escritorio, accesibilidad, tiempos de carga y comportamiento sin red. Incluir escenarios de riesgo meteorológico con mensajes prudentes. No dar por implementada esta mejora hasta revisar código, recursos y pruebas.
+
 ## Orden sugerido para retomar el proyecto
 
 1. **Auditar el repositorio y el estado real de v1.9.1:** localizar componentes, funciones de consejo, consultas Open-Meteo, normalización horaria, manejo de errores, caché/PWA y pruebas existentes. La versión se observa en las capturas; verificar en código.
@@ -76,8 +100,9 @@ Aplicación meteorológica con interfaz móvil/PWA, previsiones y recomendacione
 3. **Definir requisitos y criterios de aceptación** para consejos útiles, trazables y no contradictorios.
 4. **Prototipar y probar MET-03** (6/12/24/48 h), priorizando legibilidad móvil y accesibilidad.
 5. **Investigar MET-04** y decidir si una segunda fuente aporta suficiente valor para justificar mantenimiento y costes.
-6. **Realizar regresión:** distintas localidades, fechas, zona horaria, cambios de hora, días lluviosos/secos, pronósticos parciales, móvil/escritorio, instalación PWA y modo de conexión degradada.
-7. Documentar decisiones, resultados de QA y cambios de código **solo después de validarlos**.
+6. **Planificar MET-05** como parte del rediseño visual: validar referencias oficiales de Manolo, prototipos y reglas de mapeo antes de implementar el avatar dinámico.
+7. **Realizar regresión:** distintas localidades, fechas, zona horaria, cambios de hora, días lluviosos/secos, pronósticos parciales, móvil/escritorio, instalación PWA y modo de conexión degradada.
+8. Documentar decisiones, resultados de QA y cambios de código **solo después de validarlos**.
 
 ## Principios de trabajo
 
