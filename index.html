@@ -7,77 +7,167 @@
   <meta name="description" content="Manolo Meteo: previsión de siete días en tus localidades favoritas, ciclo solar y consejos con arte." />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="style.css?v=metfooter001a" />
-  <title>Manolo Meteo · Tu localidad</title><link rel="stylesheet" href="weather-visuals.css?v=metcanvasfinal001" /></head>
-<body id="top" data-time="night" data-weather="clear" data-ux-sky="neutral">
+  <link rel="stylesheet" href="style.css?v=1.9.1" />
+  <title>Manolo Meteo · Tu localidad</title>
+</head>
+<body data-time="night" data-weather="clear">
   <main class="shell">
-    <header class="ux3-header">
-      <a class="ux3-brand" id="brand-home" href="#top" aria-label="Manolo Meteo — volver al inicio"><img class="ux3-brand-image" src="referencia-met-ux-003/assets/seleccion-002/01_corporativa_cabecera-384.webp" width="64" height="64" alt="" /><span>MANOLO<strong>METEO</strong><small>by ManoloLabs</small></span></a>
-      <div class="ux3-header-actions"><label class="visually-hidden" for="language-selector">Idioma / Language</label><select id="language-selector" aria-label="Idioma / Language" disabled><option value="es">ES</option><option value="en">EN</option></select><button id="refresh" class="icon-button" aria-label="Actualizar previsión" title="Actualizar previsión">↻</button></div>
-    </header>
-    <section class="ux3-location" aria-label="Localidad actual y búsqueda">
-      <div class="ux3-city-heading"><span class="ux3-overline">TU ESTACIÓN</span><h1 id="current-location-name">Córdoba</h1><small id="location-favorite-label">★ Favorita</small><details class="ux3-location-details"><summary>Datos de la localidad</summary><p id="location-meta">Zona horaria y coordenadas pendientes</p></details></div>
-      <div class="ux3-city-actions"><button type="button" id="geo-button" class="geo-button" aria-describedby="geo-explanation geo-status">Usar mi ubicación</button><button id="location-toggle" type="button" aria-expanded="false" aria-controls="location-expanded" aria-label="Cambiar ciudad"><span aria-hidden="true">⌕</span> <span>Cambiar ciudad</span> <span aria-hidden="true">⌄</span></button></div>
-      <div class="geo-info"><p id="geo-explanation" class="geo-explanation">Al usar esta opción se enviará tu posición a Open-Meteo para consultar el tiempo. No se guardará como ciudad.</p><p id="geo-status" class="geo-status" role="status" aria-live="polite" hidden></p></div>
-      <div id="location-expanded" class="location-expanded ux3-search" hidden>
-        <img class="ux3-search-image" src="referencia-met-ux-003/assets/seleccion-002/02_buscador_ciudades-384.webp" width="80" height="80" alt="" /><div class="ux3-search-content"><form id="location-form" class="location-form" autocomplete="off"><label class="visually-hidden" for="location-search">Buscar localidad</label><span class="location-input-wrap"><input id="location-search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="location-results" type="text" minlength="2" maxlength="80" placeholder="Buscar ciudad…" aria-describedby="location-hint" required /><button id="location-clear" type="button" aria-label="Borrar búsqueda" title="Borrar búsqueda" hidden><span aria-hidden="true">×</span></button></span><button type="submit" id="location-submit">Buscar</button></form>
-        
-        <p id="search-privacy" class="search-privacy">Al escribir, el texto se envía a Open-Meteo para buscar localidades.</p><div id="location-hint" class="location-hint" role="status" aria-live="polite">Escribe una ciudad.</div><div id="location-results" class="location-results" role="listbox" aria-label="Resultados de búsqueda" hidden></div><button type="button" id="location-reset" class="location-reset">↩ Consultar Córdoba</button></div>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-icon">☀</span>
+        <div>
+          <div class="brand-title">MANOLO <strong>METEO</strong></div>
+          <small>ESTACIÓN METEOROLÓGICA · <span id="brand-location">CÓRDOBA</span></small>
+        </div>
       </div>
-      <div id="favorite-panel" class="ux3-favorites" role="group" aria-label="Mis ciudades favoritas"><span>FAVORITAS <small id="favorite-count">1/5</small></span><div id="favorite-list" class="favorite-list" role="group" aria-label="Accesos rápidos a tus favoritas"></div><p id="favorite-empty" hidden>Busca una ciudad y guárdala como favorita.</p><button type="button" id="favorite-add" class="favorite-add" hidden>☆ Guardar ciudad actual</button></div>
-    </section>
-    <div class="ux3-layout ux3-secondary identidad-grid">
-      <div class="identidad-actual">
-    <section class="hero ux3-sky" aria-label="El tiempo ahora">
-      <div class="ux3-sky-inner">
-        <span class="ux3-overline">UNA VENTANA AL CIELO</span><h2>Ahora en <span id="hero-location">CÓRDOBA</span></h2>
-        <div id="hero-visual-note" class="visual-note" aria-live="polite"></div>
-        <small id="sky-illustration-note" hidden></small><p class="ux3-date"><span id="today-date">Consultando previsión…</span> · <span id="hero-state">CARGANDO</span></p>
-        <div class="ux3-temperature"><strong><span id="current-temp">--</span>°</strong><div><span id="current-icon" aria-hidden="true">◌</span><b id="current-desc">Cargando datos meteorológicos</b><small id="temp-kind">Temperatura actual</small></div></div>
-        <div class="ux3-sky-meta"><span>Máx. <b id="current-high">--°</b> · Mín. <b id="current-low">--°</b></span><span><span id="feels-label">Sensación</span> <b id="current-feels">--°</b></span></div>
-        <div class="ux3-metrics"><span><small id="wind-label">VIENTO</small><b id="current-wind">-- km/h</b></span><span><small id="humidity-label">HUMEDAD</small><b id="current-humidity">--%</b></span><span><small>PROB. PRECIP. MÁX.</small><b id="current-rain">--%</b></span></div>
+      <button id="refresh" class="icon-button" aria-label="Actualizar previsión" title="Actualizar previsión">↻</button>
+    </header>
 
+    <section class="location-panel" aria-label="Localidad actual y búsqueda">
+      <div class="location-toolbar">
+        <div class="location-heading"><span class="location-pin" aria-hidden="true">📍</span><div class="location-identity"><strong id="current-location-name">Córdoba, Andalucía, España</strong><small id="location-favorite-label">★ Favorita</small></div></div>
+        <button id="location-toggle" class="location-toggle" type="button" aria-expanded="false" aria-controls="location-expanded" aria-label="Cambiar ciudad"><span class="location-toggle-icon" aria-hidden="true">⌕</span><span class="location-toggle-label">Cambiar ciudad</span><span class="location-chevron" aria-hidden="true">⌄</span></button>
+      </div>
+      <div id="location-expanded" class="location-expanded" hidden>
+        <form id="location-form" class="location-form" autocomplete="off">
+          <label class="visually-hidden" for="location-search">Buscar localidad</label>
+          <input id="location-search" type="search" minlength="2" maxlength="80" placeholder="Buscar ciudad, por ejemplo Cracovia…" aria-describedby="location-hint" required />
+          <button type="submit" id="location-submit">Buscar</button>
+        </form>
+        <div id="location-hint" class="location-hint" aria-live="polite" hidden>Escribe una ciudad para buscarla.</div>
+        <div id="location-results" class="location-results" role="group" aria-label="Resultados de búsqueda" hidden></div>
+        <button type="button" id="location-reset" class="location-reset">↩ Consultar Córdoba</button>
+      </div>
+    </section>
+    <section id="favorite-panel" class="multi-favorites" aria-label="Mis ciudades favoritas">
+      <div class="multi-favorites-heading"><span>★ MIS CIUDADES</span><small id="favorite-count">1/5</small></div>
+      <div id="favorite-list" class="favorite-list" role="group" aria-label="Accesos rápidos a tus favoritas"></div>
+      <p id="favorite-empty" class="favorite-empty" hidden>Busca una ciudad y guárdala como favorita.</p>
+      <button type="button" id="favorite-add" class="favorite-add" hidden>☆ Guardar ciudad actual</button>
+    </section>
+    <section class="hero" aria-label="El tiempo ahora">
+      <div class="hero-bg">
+        <span class="celestial"></span>
+        <span class="cloud cloud-one"></span>
+        <span class="cloud cloud-two"></span>
+        <span class="rain-layer"></span>
+        <span class="snow-layer"></span>
+        <span class="fog-layer"></span>
+        <span class="lightning"></span>
+        <div class="cordoba-skyline" aria-hidden="true"></div>
+      </div>
+      <div id="hero-visual-note" class="visual-note" aria-live="polite"></div>
+      <div id="demo-summary" class="demo-summary" hidden><strong id="demo-summary-title">SIMULACIÓN VISUAL</strong><span>Los datos y el texto de la previsión son reales.</span></div>
+      <div class="eyebrow"><span class="live-dot"></span> <span id="hero-location">CÓRDOBA · ESPAÑA</span> <span id="hero-state" class="hero-state">AHORA</span></div>
+      <div id="today-date" class="today-date">Consultando previsión…</div>
+      <div class="current-row">
+        <span id="current-icon" class="weather-symbol">◌</span>
+        <div>
+          <div class="temp"><span id="current-temp">--</span><small>°C</small></div><div id="temp-kind" class="temp-kind">Temperatura actual</div>
+          <div id="current-desc" class="current-desc">Cargando datos meteorológicos</div>
+        </div>
+      </div>
+      <div class="hero-metrics">
+        <span>↑ <b id="current-high">--°</b> máx.</span>
+        <span>↓ <b id="current-low">--°</b> mín.</span>
+        <span>☂ <b id="current-rain">--%</b> lluvia</span>
+      </div>
+      <div class="solar-strip" aria-label="Ciclo solar del día seleccionado"><span>🌅 Amanecer <b id="sunrise">--:--</b></span><span>🌇 Atardecer <b id="sunset">--:--</b></span><small id="daylight">Horas de luz: —</small></div>
+      <div class="hero-chips">
+        <div class="hero-chip"><small id="feels-label">Sensación</small><b id="current-feels">--°</b></div>
+        <div class="hero-chip"><small id="humidity-label">Humedad</small><b id="current-humidity">--%</b></div>
+        <div class="hero-chip"><small id="wind-label">Viento</small><b id="current-wind">-- km/h</b></div>
       </div>
     </section>
 
     <div id="status" class="status" role="status" aria-live="polite">Conectando con Open-Meteo…</div>
-    <section id="advice-warning" class="ux3-warning" role="status" hidden><span class="ux3-warning-icon" aria-hidden="true">!</span><div><strong>Precaución según la previsión</strong><p id="advice-text">Consultando previsión…</p><p id="advice-coverage" hidden></p><p id="advice-six-warning" hidden></p><small>No es un aviso oficial. Consulta las fuentes oficiales.</small></div></section>
+
+    <section class="panel next-hours-panel" aria-label="Previsión de las próximas seis horas">
+      <div class="section-heading next-hours-heading">
+        <div><span class="overline">LO QUE VIENE</span><h2>Próximas 6 horas</h2></div>
+        <span class="section-side" aria-hidden="true">↗</span>
       </div>
-    <section class="ux3-counsel" aria-labelledby="ux3-counsel-title"><div class="ux3-counsel-head"><div><span class="ux3-overline">UNA IDEA PARA TU DÍA</span><h2 id="ux3-counsel-title">El consejo de Manolo</h2></div><span id="advice-pill" class="advice-pill">Sin datos</span></div><div class="ux3-counsel-body"><div class="ux3-counsel-copy"><p id="advice-observation">Consultando la previsión…</p><p id="advice-avatar-caption" hidden></p><p id="advice-practical">Esperando datos de esta localidad.</p><p id="advice-phrase" class="ux3-counsel-phrase" hidden></p><small id="advice-margin" hidden>Comparación orientativa según las muestras disponibles; no garantiza seguridad.</small><details><summary>Cómo se ha elaborado</summary><small id="advice-context">Esperando datos verificables.</small></details></div><div id="advice-avatar" class="ux3-avatar" hidden><img id="advice-avatar-img" alt="" /></div></div></section>
-<section class="ux3-section" aria-labelledby="hours-title"><div class="ux3-section-head"><div><span class="ux3-overline">MIRA UN POCO MÁS ALLÁ</span><h2 id="hours-title">Próximas horas</h2></div><div class="ux3-hour-nav"><span>Desliza →</span><button id="hours-back" type="button" aria-label="Desplazar horas anteriores">‹</button><button id="hours-forward" type="button" aria-label="Desplazar horas posteriores">›</button></div></div><div class="ux3-horizon" role="group" aria-label="Horizonte horario"><button id="horizon-6" type="button" aria-pressed="false">6 h</button><button id="horizon-12" type="button" aria-pressed="true">12 h</button><button id="horizon-24" type="button" aria-pressed="false">24 h</button><button id="horizon-48" type="button" aria-pressed="false">48 h</button></div><p id="next-hours-caption" class="ux3-caption">Hora local · Open-Meteo</p><p class="ux3-caption">☂ %: probabilidad de precipitación en la hora anterior a la indicada (hora local).</p><div id="hours-scroll" class="ux3-hours-scroll" tabindex="0" role="region" aria-labelledby="hours-title"><div id="next-hours-list" class="ux3-hours-list">Cargando previsión…</div></div><p id="hours-data-note" class="ux3-caption" role="status"></p><p id="next-hours-advice" class="next-hours-advice" aria-live="polite">Consultando las próximas horas…</p><small class="ux3-caption">El Consejo inmediato evalúa seis horas desde ahora, independientemente del horizonte visual. Probabilidad de precipitación no significa certeza.</small></section>
-<section class="ux3-section" aria-labelledby="week-title"><div class="ux3-section-head"><div><span class="ux3-overline">A SIMPLE VISTA</span><h2 id="week-title">Próximos 7 días</h2></div><span class="ux3-caption">Elige un día</span></div><div id="day-list" class="ux3-days-list" role="group" aria-label="Seleccionar día de la previsión">La previsión aparecerá aquí al conectar.</div><p id="day-range-legend" class="ux3-caption day-range-legend" hidden></p></section>
-<section id="detail" class="ux3-section" aria-live="polite"><span class="ux3-overline">DÍA SELECCIONADO</span><h2 id="selected-title">—</h2><span id="selected-icon" aria-hidden="true">◌</span><p id="selected-description">Selecciona un día para ver la previsión detallada.</p><div class="ux3-day-stats"><span>Máxima <b id="detail-high">--°</b></span><span>Mínima <b id="detail-low">--°</b></span><span>Prob. precip. <b id="detail-rain">--%</b></span></div><details><summary>Ver detalle del día</summary><div class="mini-heading">Temperatura a lo largo del día</div><div id="day-chart" class="chart" aria-label="Gráfico de temperatura">—</div><div class="mini-heading">Previsión por horas</div><p class="ux3-caption">☂ %: probabilidad de precipitación en la hora anterior a la indicada (hora local).</p><div id="hour-list" class="hour-list">—</div><div id="day-extras" class="extras"></div></details></section>
-<section class="ux3-section" aria-labelledby="solar-title"><span class="ux3-overline">CICLO SOLAR</span><h2 id="solar-title">La luz del día</h2><p id="solar-selected-date" class="ux3-caption">Día seleccionado</p><div class="ux3-solar-row"><span>↗ Amanecer <b id="sunrise">--:--</b></span><span>↘ Atardecer <b id="sunset">--:--</b></span></div><small id="daylight">Horas de luz: —</small></section>
-    </div>
+      <p id="next-hours-caption" class="next-hours-caption">Hora local · Open-Meteo</p>
+      <div id="next-hours-list" class="next-hours-list" role="group" aria-label="Condiciones y lluvia previstas por hora">Cargando previsión…</div>
+      <p id="next-hours-advice" class="next-hours-advice" aria-live="polite">Consultando las próximas horas…</p>
+      <small class="next-hours-disclaimer">Probabilidad de precipitación, no certeza de lluvia. Consulta los avisos oficiales ante situaciones adversas.</small>
+    </section>
 
+    <section class="demo-panel" aria-label="Probador de ambientes">
+      <div class="demo-heading">
+        <div><span class="overline">LABORATORIO QA</span><h2>Probar ambientes <span class="demo-mini">solo visual</span></h2></div>
+        <label class="demo-toggle"><input id="demo-enabled" type="checkbox"/><span>Demo</span></label>
+      </div>
+      <div id="demo-controls" class="demo-controls" hidden>
+        <label>Tiempo
+          <select id="demo-weather">
+            <option value="clear">☀ Despejado</option><option value="partly">⛅ Poco nuboso</option>
+            <option value="cloudy">☁ Nublado</option><option value="rain">🌧 Lluvia</option>
+            <option value="storm">⛈ Tormenta</option><option value="fog">≋ Niebla</option>
+            <option value="snow">❄ Nieve</option>
+          </select>
+        </label>
+        <label>Ambiente
+          <select id="demo-time"><option value="morning">Amanecer</option><option value="day">Día</option><option value="sunset">Atardecer</option><option value="night">Noche</option></select>
+        </label>
+        <p class="demo-note">🧪 Solo cambian el cielo y los efectos. La temperatura, el icono meteorológico de la izquierda, la previsión y el Consejo de Manolo muestran datos reales.</p>
+      </div>
+    </section>
 
+    <section class="panel forecast">
+      <div class="section-heading">
+        <div><span class="overline">PRÓXIMOS DÍAS</span><h2>Elige un día</h2></div>
+        <span class="section-side">7 días <span aria-hidden="true">↘</span></span>
+      </div>
+      <div id="day-list" class="day-list" role="group" aria-label="Seleccionar día de la previsión"><div class="empty-small">La previsión aparecerá aquí al conectar.</div></div>
+    </section>
+
+    <section id="detail" class="panel detail" aria-live="polite">
+      <div class="section-heading">
+        <div><span class="overline">DÍA SELECCIONADO</span><h2 id="selected-title">—</h2></div>
+        <span id="selected-icon" class="detail-icon">◌</span>
+      </div>
+      <p id="selected-description" class="muted">Selecciona un día para ver la previsión detallada.</p>
+      <div class="detail-metrics">
+        <div><small>MÁXIMA</small><strong id="detail-high">--°</strong></div>
+        <div><small>MÍNIMA</small><strong id="detail-low">--°</strong></div>
+        <div><small>LLUVIA</small><strong id="detail-rain">--%</strong></div>
+      </div>
+      <div class="mini-heading">Temperatura a lo largo del día</div>
+      <div id="day-chart" class="chart" aria-label="Gráfico de temperatura">—</div>
+      <div class="mini-heading">Previsión por horas</div>
+      <div id="hour-list" class="hour-list">—</div>
+      <div id="day-extras" class="extras"></div>
+    </section>
+
+    <section class="advice">
+      <div class="advice-topline">
+        <div class="advice-label">💡 EL CONSEJO DE MANOLO</div>
+        <span id="advice-pill" class="advice-pill advice-pill--ok">Terraza</span>
+      </div>
+      <p id="advice-text">A ver qué dice el cielo, que hablar sin datos es de cuñados. 😂</p>
+      <div class="advice-subblock">
+        <div class="advice-subtitle">Recomendación práctica</div>
+        <p id="advice-practical" class="advice-practical">Cuando elijas un día, aquí te diré lo más útil para salir, pasear o esconderte del calor.</p>
+      </div>
+      <small id="advice-context">Consejo adaptado al día que selecciones</small>
+    </section>
 
     <section class="links-panel" id="official-links">
       <h2>Centro de operaciones</h2>
       <div class="quick-links">
         <a href="https://www.aemet.es/es/eltiempo/observacion/radar" target="_blank" rel="noopener noreferrer"><span>📡</span><b>Radar</b><small>AEMET ↗</small></a>
         <a href="https://www.aemet.es/es/eltiempo/prediccion/avisos" target="_blank" rel="noopener noreferrer"><span>⚠</span><b>Avisos</b><small>AEMET ↗</small></a>
-        <a href="https://www.aemet.es/es/eltiempo/prediccion/municipios" target="_blank" rel="noopener noreferrer"><span>📅</span><b>Buscar municipio</b><small>AEMET · España ↗</small></a>
+        <a href="https://www.aemet.es/es/eltiempo/prediccion/municipios/cordoba-id14021" target="_blank" rel="noopener noreferrer"><span>📅</span><b>Pronóstico</b><small>AEMET ↗</small></a>
       </div>
     </section>
 
+    <footer>
+      <span>Hecho con ☕ y un poco de cachondeo. · <strong>v1.9.1</strong></span>
+      <span>Datos: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Hora local de la localidad</span>
+      <small>Las previsiones son estimaciones. Para alertas oficiales en España, consulta AEMET o el servicio meteorológico de tu país. La app no envía avisos automáticos.</small>
+    </footer>
   </main>
-  <footer class="site-footer shell" aria-label="Información corporativa y fuentes de datos">
-    <p class="site-footer-brand"><strong>ManoloLabs by Helio</strong></p>
-    <p class="site-footer-tagline" lang="es">Ideas humanas · Tecnología inteligente</p>
-    <p>Hecho con ☕ y un poco de cachondeo · <strong>v1.9.1</strong></p>
-    <p>Datos: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Hora local de la localidad</p>
-    <p class="site-footer-notice">Las previsiones son estimaciones. Para alertas oficiales, consulta el servicio meteorológico de tu país. Esta aplicación no emite avisos automáticos.</p>
-    <small class="site-footer-credits">Licencia de datos: <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a> · <a href="https://open-meteo.com/en/licence" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Localidades: <a href="https://www.geonames.org/" target="_blank" rel="noopener noreferrer">GeoNames</a>.<br /><span>Presentación y consejos derivados de los datos por Manolo Meteo; sin respaldo del proveedor.</span></small>
-  </footer>
-  <script src="i18n-ui-005h.js?v=metfooter001a" defer></script>
-  <script src="i18n-risk-draft-005g.js?v=metvisual003" defer></script>
-  <script src="safety-browser.js?v=metvisual003" defer></script>
-  <script src="frases-provisionales.js?v=metcanvasfinal001" defer></script>
-  <script src="frases-prototipo.js?v=metadvicefix002a" defer></script>
-<script src="weather-visuals.js?v=metcanvasfinal001" defer></script>
-<script src="app.js?v=metfavoritesfix001a" defer></script>
+  <script src="app.js?v=1.9.1" defer></script>
 </body>
 </html>
-
-
