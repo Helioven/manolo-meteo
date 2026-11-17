@@ -1,0 +1,26 @@
+body[data-time][data-weather][data-ux-sky][data-sky-recovery="partly"] .ux3-sky{background-image:linear-gradient(90deg,rgba(4,24,44,.95),rgba(4,24,44,.74)),url("sky-recuperado/parcialmente-nublado-12.webp")!important}
+body[data-time][data-weather][data-ux-sky][data-sky-recovery="cloudy"] .ux3-sky{background-image:linear-gradient(90deg,rgba(4,24,44,.95),rgba(4,24,44,.74)),url("sky-recuperado/nublado-cubierto-11.webp")!important}
+body[data-time][data-weather][data-ux-sky][data-sky-recovery="showers"] .ux3-sky{background-image:linear-gradient(90deg,rgba(4,24,44,.95),rgba(4,24,44,.74)),url("sky-recuperado/chubascos-nubes-09.webp")!important}
+body[data-time][data-weather][data-ux-sky][data-sky-recovery="night-clear"] .ux3-sky{background-image:linear-gradient(90deg,rgba(4,24,44,.90),rgba(4,24,44,.58)),url("sky-recuperado/noche-despejada-15.webp")!important}
+body[data-time][data-weather][data-ux-sky][data-sky-recovery="night-cloudy"] .ux3-sky{background-image:linear-gradient(90deg,rgba(4,24,44,.94),rgba(4,24,44,.70)),url("sky-recuperado/noche-nublada-16.webp")!important}
+#sky-illustration-note{font-size:12px;line-height:1.35;color:#edf7fb}#sky-illustration-note[hidden]{display:none}
+body[data-time][data-weather][data-ux-sky][data-sky-recovery="night-showers"] .ux3-sky{background-image:linear-gradient(90deg,rgba(4,24,44,.95),rgba(4,24,44,.74)),url("sky-recuperado/chubascos-nocturnos-18.webp")!important}
+body[data-time][data-weather][data-ux-sky][data-sky-recovery="night-storm"] .ux3-sky{background-image:linear-gradient(90deg,rgba(4,24,44,.95),rgba(4,24,44,.74)),url("sky-recuperado/tormenta-nocturna-19.webp")!important}
+body[data-time][data-weather][data-ux-sky][data-sky-recovery="night-drizzle"] .ux3-sky,body[data-time][data-weather][data-ux-sky][data-sky-recovery="night-snow"] .ux3-sky{background-image:linear-gradient(90deg,rgba(4,24,44,.95),rgba(4,24,44,.74)),url("sky-recuperado/noche-nublada-16.webp")!important}
+/* MET-SKY-REALISM: layered photographic clouds and irregular precipitation. */
+.hero > .sky-realism{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;border-radius:inherit;contain:paint}
+.sr-cloud{position:absolute;inset:-12% -14%;background-image:var(--sr-image);background-size:cover;background-position:70% 40%;mask-image:radial-gradient(ellipse at 84% 32%,#000 0 25%,#0009 48%,transparent 76%);opacity:.45;animation:sr-cloud-drift 65s ease-in-out infinite alternate}
+.sr-cloud-1{inset:-25% -24%;opacity:.22;background-position:30% 60%;animation-duration:97s;animation-delay:-32s;animation-direction:alternate-reverse;mask-image:radial-gradient(ellipse at 65% 70%,#000 0 24%,transparent 70%)}
+.sky-realism[data-scene="partly"] .sr-cloud{opacity:.34}.sky-realism[data-scene="cloudy"] .sr-cloud-0{opacity:.62}
+.sky-realism[data-scene^="night"] .sr-cloud{opacity:.34}.sky-realism[data-scene^="night"] .sr-cloud-1{opacity:.17}
+@keyframes sr-cloud-drift{from{transform:translate3d(-12px,0,0) scale(1.03)}to{transform:translate3d(18px,5px,0) scale(1.06)}}
+.sky-realism[data-paused="true"] *{animation-play-state:paused!important}
+.sky-realism::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(4,24,44,.46) 0 32%,transparent 65%),linear-gradient(90deg,rgba(4,24,44,.72),rgba(4,24,44,.55) 55%,rgba(4,24,44,.1))}
+
+/* Canvas replaces CSS precipitation; photographic clouds remain separate. */
+.hero > .sky-canvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;pointer-events:none;border-radius:inherit;contain:paint}
+@media(prefers-reduced-motion:reduce){.hero > .sky-canvas{visibility:hidden}}
+
+body[data-time][data-weather][data-ux-sky][data-sky-recovery="night-partly"] .ux3-sky{background-image:linear-gradient(90deg,rgba(4,24,44,.94),rgba(4,24,44,.7)),url("sky-recuperado/noche-nublada-16.webp")!important}
+@media(prefers-reduced-motion:reduce){.sky-realism *{animation:none!important;transition:none!important}}
+@media(max-width:600px){.sr-cloud-1{opacity:.16}}
